@@ -13,6 +13,10 @@ export default defineConfig({
     vueDevTools(),
   ],
   base: isDev ? '/' : '/revenue-management-system/',
+  build: {
+    outDir: 'dist',
+    assetsDir: 'assets',
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
