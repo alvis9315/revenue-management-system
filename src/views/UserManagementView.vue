@@ -1,14 +1,82 @@
 <template>
   <AppLayout>
     <div class="space-y-6">
-      <div>
-        <h2 class="text-2xl font-bold text-slate-800">使用者管理</h2>
-        <p class="text-gray-600 mt-1">管理系統使用者帳號與角色權限</p>
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-2xl font-bold text-slate-800">使用者管理</h2>
+          <p class="text-gray-600 mt-1">管理系統使用者帳號與角色權限</p>
+        </div>
+        <button 
+          @click="showAddUserModal = true"
+          class="btn-primary flex items-center space-x-2"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+          <span>新增使用者</span>
+        </button>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- 新增使用者 -->
-        <BaseCard title="新增使用者">
+      <!-- 使用者列表 -->
+      <BaseCard title="使用者列表">
+        <BaseTable
+          :columns="userColumns"
+          :data="store.users"
+          :show-actions="true"
+        >
+          <template #status="{ value }">
+            <BaseTag
+              :text="value"
+              :type="value === '啟用' ? 'success' : 'default'"
+            />
+          </template>
+          
+          <template #role="{ value }">
+            <BaseTag
+              :text="value"
+              :type="getRoleType(value)"
+            />
+          </template>
+
+          <template #actions="{ row, index }">
+            <div class="flex space-x-2">
+              <button
+                @click="toggleUserStatus(row)"
+                :class="row.status === '啟用' ? 'px-3 py-1.5 text-m rounded-lg bg-red-100 text-red-700 hover:bg-red-200' : 'px-3 py-1.5 text-m rounded-lg bg-green-100 text-green-700 hover:bg-green-200'"
+                class="transition-colors"
+              >
+                {{ row.status === '啟用' ? '停用' : '啟用' }}
+              </button>
+              <button
+                @click="changeUserRole(row)"
+                class="px-3 py-1.5 text-m rounded-lg bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors"
+              >
+                變更
+              </button>
+            </div>
+          </template>
+        </BaseTable>
+      </BaseCard>
+    </div>
+
+    <!-- 新增使用者 Modal -->
+    <div v-if="showAddUserModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg w-full max-w-md mx-4">
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between p-6 border-b border-gray-200">
+          <h3 class="text-lg font-semibold text-gray-900">新增使用者</h3>
+          <button 
+            @click="closeAddUserModal"
+            class="text-gray-400 hover:text-gray-600 transition-colors"
+          >
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        
+        <!-- Modal Body -->
+        <div class="p-6">
           <form @submit.prevent="addUser" class="space-y-4">
             <div>
               <label class="form-label">帳號 *</label>
@@ -42,53 +110,19 @@
               </select>
             </div>
             
-            <button type="submit" class="btn-primary w-full">
-              新增使用者
-            </button>
+            <div class="flex space-x-3 pt-4">
+              <button 
+                type="button" 
+                @click="closeAddUserModal"
+                class="btn-secondary flex-1"
+              >
+                取消
+              </button>
+              <button type="submit" class="btn-primary flex-1">
+                新增使用者
+              </button>
+            </div>
           </form>
-        </BaseCard>
-
-        <!-- 使用者列表 -->
-        <div class="lg:col-span-2">
-          <BaseCard title="使用者列表">
-            <BaseTable
-              :columns="userColumns"
-              :data="store.users"
-              :show-actions="true"
-            >
-              <template #status="{ value }">
-                <BaseTag
-                  :text="value"
-                  :type="value === '啟用' ? 'success' : 'default'"
-                />
-              </template>
-              
-              <template #role="{ value }">
-                <BaseTag
-                  :text="value"
-                  :type="getRoleType(value)"
-                />
-              </template>
-
-              <template #actions="{ row, index }">
-                <div class="space-x-2">
-                  <button
-                    @click="toggleUserStatus(row)"
-                    :class="row.status === '啟用' ? 'text-red-600 hover:text-red-800' : 'text-green-600 hover:text-green-800'"
-                    class="text-sm"
-                  >
-                    {{ row.status === '啟用' ? '停用' : '啟用' }}
-                  </button>
-                  <button
-                    @click="changeUserRole(row)"
-                    class="text-blue-600 hover:text-blue-800 text-sm"
-                  >
-                    變更角色
-                  </button>
-                </div>
-              </template>
-            </BaseTable>
-          </BaseCard>
         </div>
       </div>
     </div>
@@ -127,6 +161,7 @@ import { mockUsers } from '../mock/mockData.js'
 
 const store = useAppStore()
 
+const showAddUserModal = ref(false)
 const userForm = ref({
   username: '',
   name: '',
@@ -153,6 +188,12 @@ function addUser() {
   
   store.addUser(newUser)
   
+  // 關閉彈窗並重設表單
+  closeAddUserModal()
+}
+
+function closeAddUserModal() {
+  showAddUserModal.value = false
   // 重設表單
   userForm.value = {
     username: '',

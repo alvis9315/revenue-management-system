@@ -17,10 +17,12 @@
           :data="store.batchRecords"
         >
           <template #status="{ value }">
-            <BaseTag
-              :text="value"
-              :type="getStatusType(value)"
-            />
+            <span 
+              class="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-xs font-medium w-16"
+              :class="getStatusClasses(value)"
+            >
+              {{ value }}
+            </span>
           </template>
           
           <template #successRate="{ row }">
@@ -96,13 +98,13 @@ async function runBatchJob() {
   }
 }
 
-function getStatusType(status) {
-  const statusTypes = {
-    '完成': 'success',
-    '執行中': 'warning',
-    '失敗': 'danger'
+function getStatusClasses(status) {
+  const statusClasses = {
+    '完成': 'bg-green-100 text-green-800',
+    '執行中': 'bg-blue-100 text-blue-800',
+    '失敗': 'bg-red-100 text-red-800'
   }
-  return statusTypes[status] || 'default'
+  return statusClasses[status] || 'bg-gray-100 text-gray-800'
 }
 
 function getSuccessRate(row) {

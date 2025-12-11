@@ -45,17 +45,34 @@ export async function runBatchJob() {
   const now = new Date()
   const batchNumber = `BTH${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}${String(Math.floor(Math.random() * 1000)).padStart(3, '0')}`
   
-  const totalCount = Math.floor(Math.random() * 100) + 20
-  const failCount = Math.floor(Math.random() * 5)
-  const successCount = totalCount - failCount
+  // 隨機決定是否為失敗狀態 (20% 機率失敗)
+  const isFailed = Math.random() < 0.2
   
-  return {
-    batchNumber,
-    executeTime: now.toLocaleString('zh-TW'),
-    totalCount,
-    successCount,
-    failCount,
-    status: '完成'
+  if (isFailed) {
+    // 失敗案例
+    const totalCount = Math.floor(Math.random() * 100) + 20
+    return {
+      batchNumber,
+      executeTime: now.toLocaleString('zh-TW'),
+      totalCount,
+      successCount: 0,
+      failCount: totalCount,
+      status: '失敗'
+    }
+  } else {
+    // 成功案例
+    const totalCount = Math.floor(Math.random() * 100) + 20
+    const failCount = Math.floor(Math.random() * 5)
+    const successCount = totalCount - failCount
+    
+    return {
+      batchNumber,
+      executeTime: now.toLocaleString('zh-TW'),
+      totalCount,
+      successCount,
+      failCount,
+      status: '已完成'
+    }
   }
 }
 

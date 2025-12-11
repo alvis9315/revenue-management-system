@@ -3,6 +3,8 @@ import { useAppStore } from '../stores/useAppStore.js'
 
 // Views
 import LoginView from '../views/LoginView.vue'
+import ForgotPasswordView from '../views/ForgotPasswordView.vue'
+import ResetPasswordView from '../views/ResetPasswordView.vue'
 import DashboardView from '../views/DashboardView.vue'
 import DocumentCreateView from '../views/DocumentCreateView.vue'
 import DocumentListView from '../views/DocumentListView.vue'
@@ -24,6 +26,18 @@ const routes = [
     meta: { requiresAuth: false }
   },
   {
+    path: '/forgot-password',
+    name: 'ForgotPassword',
+    component: ForgotPasswordView,
+    meta: { requiresAuth: false }
+  },
+  {
+    path: '/reset-password',
+    name: 'ResetPassword',
+    component: ResetPasswordView,
+    meta: { requiresAuth: false }
+  },
+  {
     path: '/dashboard',
     name: 'Dashboard',
     component: DashboardView,
@@ -39,7 +53,7 @@ const routes = [
     path: '/documents/list',
     name: 'DocumentList',
     component: DocumentListView,
-    meta: { requiresAuth: true, title: '單據查詢與管理' }
+    meta: { requiresAuth: true, title: '單據管理' }
   },
   {
     path: '/reconciliation/import',

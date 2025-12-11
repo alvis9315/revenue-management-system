@@ -40,7 +40,7 @@ export const mockDocuments = [
     department: '行政處',
     amount: 3200,
     paymentMethod: '轉帳',
-    status: '作廢',
+    status: '已作廢',
     notes: '重複申請',
     createdAt: '2024-12-04'
   },
@@ -98,7 +98,7 @@ export const mockBatchRecords = [
     totalCount: 150,
     successCount: 145,
     failCount: 5,
-    status: '完成'
+    status: '已完成'
   },
   {
     id: 'BATCH002',
@@ -107,7 +107,7 @@ export const mockBatchRecords = [
     totalCount: 89,
     successCount: 89,
     failCount: 0,
-    status: '完成'
+    status: '已完成'
   },
   {
     id: 'BATCH003',
@@ -117,6 +117,15 @@ export const mockBatchRecords = [
     successCount: 0,
     failCount: 0,
     status: '執行中'
+  },
+  {
+    id: 'BATCH004',
+    batchNumber: 'BTH20241207001',
+    executeTime: '2024-12-07 11:20:00',
+    totalCount: 75,
+    successCount: 0,
+    failCount: 75,
+    status: '失敗'
   }
 ]
 

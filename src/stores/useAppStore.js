@@ -18,7 +18,7 @@ export const useAppStore = defineStore('app', () => {
     const total = documents.value.length
     const reconciled = documents.value.filter(doc => doc.status === '已核銷').length
     const pending = documents.value.filter(doc => doc.status === '未核銷').length
-    const cancelled = documents.value.filter(doc => doc.status === '作廢').length
+    const cancelled = documents.value.filter(doc => doc.status === '已作廢').length
     const exceptions = exceptionRecords.value.length
     
     return {
@@ -32,9 +32,17 @@ export const useAppStore = defineStore('app', () => {
   })
   
   // Actions
-  function login(username, password, role) {
-    // 簡單驗證
-    if (username === 'demo' && password === 'demo') {
+  function login(username, password) {
+    // 帳號對應的角色
+    const accountRoles = {
+      'operator': '承辦人',
+      'auditor': '稽核人員', 
+      'vendor': '業者'
+    }
+    
+    // 驗證帳號密碼
+    if (password === '123' && accountRoles[username]) {
+      const role = accountRoles[username]
       currentUser.value = { username, role }
       userRole.value = role
       return true
