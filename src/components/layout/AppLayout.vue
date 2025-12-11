@@ -271,7 +271,7 @@
             :class="enableTransition ? 'transition-all duration-300' : ''"
             :style="{ marginLeft: isMenuCollapsed ? '5rem' : '16rem' }">
         <div class="p-4 md:p-6 lg:p-8">
-          <div class="max-w-7xl mx-auto">
+          <div class="mx-auto">
             <slot></slot>
           </div>
         </div>
