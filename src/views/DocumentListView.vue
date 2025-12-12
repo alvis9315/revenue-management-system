@@ -21,7 +21,7 @@
           </svg>
         </div>
         
-        <div v-show="searchPanelOpen" class="mt-4 space-y-4">
+        <div v-show="searchPanelOpen" class="mt-4 space-y-6">
           <!-- 第一排 -->
           <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
@@ -44,7 +44,7 @@
             </div>
             <div>
               <label class="form-label">單位</label>
-              <select v-model="searchForm.department" class="form-input">
+              <select v-model="searchForm.department" class="form-input h-10">
                 <option 
                   v-for="dept in departments" 
                   :key="dept.value" 
@@ -56,7 +56,7 @@
             </div>
             <div>
               <label class="form-label">付款方式</label>
-              <select v-model="searchForm.paymentMethod" class="form-input">
+              <select v-model="searchForm.paymentMethod" class="form-input h-10">
                 <option value="">全部</option>
                 <option value="轉帳">轉帳</option>
                 <option value="臨櫃">臨櫃</option>
@@ -65,27 +65,59 @@
             </div>
           </div>
           
-          <!-- 第二排 -->
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label class="form-label">金額範圍</label>
+          <!-- 第二排 - 日期和狀態 -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <!-- 建立日期範圍 -->
+            <div class="lg:col-span-2">
+              <label class="form-label">建立日期範圍</label>
               <div class="flex items-center space-x-2">
+                <input
+                  v-model="searchForm.dateStart"
+                  type="date"
+                  class="form-input flex-1 h-10"
+                />
+                <span class="text-gray-500">~</span>
+                <input
+                  v-model="searchForm.dateEnd"
+                  type="date"
+                  class="form-input flex-1 h-10"
+                />
+              </div>
+            </div>
+            
+            <!-- 狀態 -->
+            <div>
+              <label class="form-label">狀態</label>
+              <select v-model="searchForm.status" class="form-input w-full h-10">
+                <option value="">全部</option>
+                <option value="未核銷">未核銷</option>
+                <option value="已核銷">已核銷</option>
+                <option value="已作廢">已作廢</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- 第三排 - 金額範圍 -->
+          <div class="w-full">
+            <div class="max-w-2xl">
+              <label class="form-label">金額範圍</label>
+              <div class="flex items-center space-x-2 mb-3">
                 <input
                   v-model="searchForm.amountMin"
                   type="number"
-                  class="form-input flex-1"
+                  class="form-input flex-1 h-10"
                   placeholder="最小金額"
                 />
                 <span class="text-gray-500">~</span>
                 <input
                   v-model="searchForm.amountMax"
                   type="number"
-                  class="form-input flex-1"
+                  class="form-input flex-1 h-10"
                   placeholder="最大金額"
                 />
               </div>
               <!-- 最小金額拖拉條 -->
-              <div class="mt-2">
+              <div class="mb-3">
                 <label class="text-xs text-gray-600">最小金額拖拉條</label>
                 <input
                   type="range"
@@ -98,7 +130,7 @@
                 <div class="text-xs text-gray-500 mt-1">最小金額: ${{ parseInt(searchForm.amountMin || 0).toLocaleString() }}</div>
               </div>
               <!-- 最大金額拖拉條 -->
-              <div class="mt-2">
+              <div>
                 <label class="text-xs text-gray-600">最大金額拖拉條</label>
                 <input
                   type="range"
@@ -110,33 +142,6 @@
                 />
                 <div class="text-xs text-gray-500 mt-1">最大金額: ${{ parseInt(searchForm.amountMax || 0).toLocaleString() }}</div>
               </div>
-            </div>
-            
-            <div>
-              <label class="form-label">建立日期範圍</label>
-              <div class="flex items-center space-x-2">
-                <input
-                  v-model="searchForm.dateStart"
-                  type="date"
-                  class="form-input flex-1"
-                />
-                <span class="text-gray-500">~</span>
-                <input
-                  v-model="searchForm.dateEnd"
-                  type="date"
-                  class="form-input flex-1"
-                />
-              </div>
-            </div>
-            
-            <div>
-              <label class="form-label">狀態</label>
-              <select v-model="searchForm.status" class="form-input">
-                <option value="">全部</option>
-                <option value="未核銷">未核銷</option>
-                <option value="已核銷">已核銷</option>
-                <option value="已作廢">已作廢</option>
-              </select>
             </div>
           </div>
           

@@ -63,21 +63,21 @@
       <!-- 左側選單 -->
       <nav :class="['bg-white shadow-lg fixed left-0 top-0 bottom-0 z-30', 
                     isMenuCollapsed ? 'w-20' : 'w-64 overflow-y-auto',
-                    enableTransition ? 'transition-all duration-300' : '']" 
+                    enableTransition ? 'transition-all duration-500 ease-in-out' : '']" 
            :style="{ top: headerHeight + 'px' }">
         <div class="p-4">
           <!-- 折疊按鈕 -->
           <div :class="['mb-4', isMenuCollapsed ? 'flex justify-center' : 'flex justify-end']">
             <button 
               @click.stop="toggleMenu"
-              class="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+              class="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-110 hover:rotate-3 active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50"
             >
               <!-- 展開時顯示左箭頭 -->
-              <svg v-if="!isMenuCollapsed" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg v-if="!isMenuCollapsed" class="w-5 h-5 transition-all duration-500 ease-in-out transform" :class="enableTransition ? 'rotate-0' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
               </svg>
               <!-- 折疊時顯示漢堡圖示 -->
-              <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg v-else class="w-5 h-5 transition-all duration-500 ease-in-out transform" :class="enableTransition ? 'rotate-0' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
@@ -96,10 +96,10 @@
                 ]"
                 :title="isMenuCollapsed ? '儀表板' : ''"
               >
-                <span class="material-icons-round" :class="isMenuCollapsed ? 'mr-0' : 'mr-3'">📊</span>
-                <span v-if="!isMenuCollapsed">儀表板</span>
+                <span class="material-icons-round flex-shrink-0 transition-all duration-500 ease-in-out transform hover:scale-110 hover:rotate-12 group-hover:text-primary-600" :class="isMenuCollapsed ? 'mr-0' : 'mr-3'">📊</span>
+                <span class="transition-all duration-500 ease-in-out whitespace-nowrap overflow-hidden" :class="isMenuCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'">儀表板</span>
                 <!-- 折疊時的懸浮提示 -->
-                <div v-else @click.stop class="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">
+                <div :class="isMenuCollapsed ? 'opacity-0 group-hover:opacity-100' : 'opacity-0'" @click.stop class="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-sm rounded transition-all duration-300 ease-in-out pointer-events-none whitespace-nowrap z-50">
                   儀表板
                 </div>
               </router-link>
@@ -117,10 +117,10 @@
                 ]"
                 :title="isMenuCollapsed ? '單據開立' : ''"
               >
-                <span class="material-icons-round" :class="isMenuCollapsed ? 'mr-0' : 'mr-3'">📝</span>
-                <span v-if="!isMenuCollapsed">單據開立</span>
+                <span class="material-icons-round flex-shrink-0 transition-all duration-500 ease-in-out transform hover:scale-110 hover:-rotate-12 group-hover:text-primary-600" :class="isMenuCollapsed ? 'mr-0' : 'mr-3'">📝</span>
+                <span class="transition-all duration-500 ease-in-out whitespace-nowrap overflow-hidden" :class="isMenuCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'">單據開立</span>
                 <!-- 折疊時的懸浮提示 -->
-                <div v-else @click.stop class="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">
+                <div :class="isMenuCollapsed ? 'opacity-0 group-hover:opacity-100' : 'opacity-0'" @click.stop class="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-sm rounded transition-all duration-300 ease-in-out pointer-events-none whitespace-nowrap z-50">
                   單據開立
                 </div>
               </router-link>
@@ -138,10 +138,10 @@
                 ]"
                 :title="isMenuCollapsed ? '單據管理' : ''"
               >
-                <span class="material-icons-round" :class="isMenuCollapsed ? 'mr-0' : 'mr-3'">📋</span>
-                <span v-if="!isMenuCollapsed">單據管理</span>
+                <span class="material-icons-round flex-shrink-0 transition-all duration-500 ease-in-out transform hover:scale-110 hover:rotate-6 group-hover:text-primary-600" :class="isMenuCollapsed ? 'mr-0' : 'mr-3'">📋</span>
+                <span class="transition-all duration-500 ease-in-out whitespace-nowrap overflow-hidden" :class="isMenuCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'">單據管理</span>
                 <!-- 折疊時的懸浮提示 -->
-                <div v-else @click.stop class="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">
+                <div :class="isMenuCollapsed ? 'opacity-0 group-hover:opacity-100' : 'opacity-0'" @click.stop class="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-sm rounded transition-all duration-300 ease-in-out pointer-events-none whitespace-nowrap z-50">
                   單據管理
                 </div>
               </router-link>
@@ -159,10 +159,10 @@
                 ]"
                 :title="isMenuCollapsed ? '核銷匯入' : ''"
               >
-                <span class="material-icons-round" :class="isMenuCollapsed ? 'mr-0' : 'mr-3'">📥</span>
-                <span v-if="!isMenuCollapsed">核銷匯入</span>
+                <span class="material-icons-round flex-shrink-0 transition-all duration-500 ease-in-out transform hover:scale-110 hover:-rotate-6 group-hover:text-primary-600" :class="isMenuCollapsed ? 'mr-0' : 'mr-3'">📥</span>
+                <span class="transition-all duration-500 ease-in-out whitespace-nowrap overflow-hidden" :class="isMenuCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'">核銷匯入</span>
                 <!-- 折疊時的懸浮提示 -->
-                <div v-else @click.stop class="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">
+                <div :class="isMenuCollapsed ? 'opacity-0 group-hover:opacity-100' : 'opacity-0'" @click.stop class="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-sm rounded transition-all duration-300 ease-in-out pointer-events-none whitespace-nowrap z-50">
                   核銷匯入
                 </div>
               </router-link>
@@ -180,15 +180,15 @@
                 ]"
                 :title="isMenuCollapsed ? '異常清單' : ''"
               >
-                <span class="material-icons-round" :class="isMenuCollapsed ? 'mr-0' : 'mr-3'">⚠️</span>
-                <template v-if="!isMenuCollapsed">
+                <span class="material-icons-round flex-shrink-0 transition-all duration-500 ease-in-out transform hover:scale-110 hover:rotate-12 group-hover:text-red-600" :class="isMenuCollapsed ? 'mr-0' : 'mr-3'">⚠️</span>
+                <div class="flex items-center transition-all duration-500 ease-in-out whitespace-nowrap overflow-hidden" :class="isMenuCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'">
                   <span>異常清單</span>
                   <span v-if="store.documentStats.exceptions > 0" class="ml-2 bg-red-500 text-white text-xs rounded-full px-2 py-1">
                     {{ store.documentStats.exceptions }}
                   </span>
-                </template>
+                </div>
                 <!-- 折疊時的懸浮提示 -->
-                <div v-else @click.stop class="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">
+                <div :class="isMenuCollapsed ? 'opacity-0 group-hover:opacity-100' : 'opacity-0'" @click.stop class="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-sm rounded transition-all duration-300 ease-in-out pointer-events-none whitespace-nowrap z-50">
                   異常清單 {{ store.documentStats.exceptions > 0 ? `(${store.documentStats.exceptions})` : '' }}
                 </div>
               </router-link>
@@ -206,10 +206,10 @@
                 ]"
                 :title="isMenuCollapsed ? '退費作業' : ''"
               >
-                <span class="material-icons-round" :class="isMenuCollapsed ? 'mr-0' : 'mr-3'">💰</span>
-                <span v-if="!isMenuCollapsed">退費作業</span>
+                <span class="material-icons-round flex-shrink-0 transition-all duration-500 ease-in-out transform hover:scale-110 hover:-rotate-12 group-hover:text-green-600" :class="isMenuCollapsed ? 'mr-0' : 'mr-3'">💰</span>
+                <span class="transition-all duration-500 ease-in-out whitespace-nowrap overflow-hidden" :class="isMenuCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'">退費作業</span>
                 <!-- 折疊時的懸浮提示 -->
-                <div v-else @click.stop class="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">
+                <div :class="isMenuCollapsed ? 'opacity-0 group-hover:opacity-100' : 'opacity-0'" @click.stop class="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-sm rounded transition-all duration-300 ease-in-out pointer-events-none whitespace-nowrap z-50">
                   退費作業
                 </div>
               </router-link>
@@ -227,10 +227,10 @@
                 ]"
                 :title="isMenuCollapsed ? '批次作業狀態' : ''"
               >
-                <span class="material-icons-round" :class="isMenuCollapsed ? 'mr-0' : 'mr-3'">⚙️</span>
-                <span v-if="!isMenuCollapsed">批次作業狀態</span>
+                <span class="material-icons-round flex-shrink-0 transition-all duration-500 ease-in-out transform hover:scale-110 hover:rotate-180 group-hover:text-blue-600" :class="isMenuCollapsed ? 'mr-0' : 'mr-3'">⚙️</span>
+                <span class="transition-all duration-500 ease-in-out whitespace-nowrap overflow-hidden" :class="isMenuCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'">批次作業狀態</span>
                 <!-- 折疊時的懸浮提示 -->
-                <div v-else @click.stop class="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">
+                <div :class="isMenuCollapsed ? 'opacity-0 group-hover:opacity-100' : 'opacity-0'" @click.stop class="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-sm rounded transition-all duration-300 ease-in-out pointer-events-none whitespace-nowrap z-50">
                   批次作業狀態
                 </div>
               </router-link>
@@ -248,10 +248,10 @@
                 ]"
                 :title="isMenuCollapsed ? '使用者管理' : ''"
               >
-                <span class="material-icons-round" :class="isMenuCollapsed ? 'mr-0' : 'mr-3'">👥</span>
-                <span v-if="!isMenuCollapsed">使用者管理</span>
+                <span class="material-icons-round flex-shrink-0 transition-all duration-500 ease-in-out transform hover:scale-110 hover:rotate-6 group-hover:text-purple-600" :class="isMenuCollapsed ? 'mr-0' : 'mr-3'">👥</span>
+                <span class="transition-all duration-500 ease-in-out whitespace-nowrap overflow-hidden" :class="isMenuCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'">使用者管理</span>
                 <!-- 折疊時的懸浮提示 -->
-                <div v-else @click.stop class="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">
+                <div :class="isMenuCollapsed ? 'opacity-0 group-hover:opacity-100' : 'opacity-0'" @click.stop class="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-sm rounded transition-all duration-300 ease-in-out pointer-events-none whitespace-nowrap z-50">
                   使用者管理
                 </div>
               </router-link>
@@ -268,7 +268,7 @@
 
       <!-- 主要內容區 -->
       <main class="flex-1 overflow-y-auto bg-gray-50" 
-            :class="enableTransition ? 'transition-all duration-300' : ''"
+            :class="enableTransition ? 'transition-all duration-500 ease-in-out' : ''"
             :style="{ marginLeft: isMenuCollapsed ? '5rem' : '16rem' }">
         <div class="p-4 md:p-6 lg:p-8">
           <div class="mx-auto">
@@ -385,7 +385,7 @@ onMounted(async () => {
   await nextTick()
   setTimeout(() => {
     enableTransition.value = true
-  }, 50)
+  }, 500)
 })
 
 onUnmounted(() => {
