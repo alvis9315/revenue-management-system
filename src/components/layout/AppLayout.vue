@@ -61,8 +61,8 @@
     <!-- 主要內容區域 -->
     <div class="flex flex-1 relative">
       <!-- 左側選單 -->
-      <nav :class="['bg-white shadow-lg fixed left-0 top-0 bottom-0 z-30', 
-                    isMenuCollapsed ? 'w-20' : 'w-64 overflow-y-auto',
+      <nav :class="['bg-white shadow-lg fixed left-0 top-0 bottom-0 z-30 overflow-hidden', 
+                    isMenuCollapsed ? 'w-20' : 'w-64',
                     enableTransition ? 'transition-all duration-500 ease-in-out' : '']" 
            :style="{ top: headerHeight + 'px' }">
         <div class="p-4">
