@@ -119,7 +119,7 @@
                 取消
               </button>
               <button type="submit" class="btn-primary flex-1">
-                新增使用者
+                新增
               </button>
             </div>
           </form>

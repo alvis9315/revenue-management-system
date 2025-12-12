@@ -269,6 +269,9 @@
         </div>
       </main>
     </div>
+    
+    <!-- Toast 組件 -->
+    <BaseToast ref="toast" />
   </div>
 </template>
 
@@ -276,6 +279,7 @@
 import { useAppStore } from '../../stores/useAppStore.js'
 import { useRouter, useRoute } from 'vue-router'
 import { computed, ref, onMounted, onUnmounted, nextTick, watch } from 'vue'
+import BaseToast from '../common/BaseToast.vue'
 
 const store = useAppStore()
 const router = useRouter()
@@ -292,6 +296,8 @@ const isMenuCollapsed = ref(localStorage.getItem('menuCollapsed') === 'true')
 const enableTransition = ref(false)
 // 控制圖標是否完全置中（動畫完成後）
 const isFullyCollapsed = ref(localStorage.getItem('menuCollapsed') === 'true')
+// Toast 參考
+const toast = ref(null)
 
 // 基於角色的選單許可權配置
 const rolePermissions = {
@@ -369,7 +375,7 @@ function toggleMenu() {
 function openUserSettings() {
   isUserMenuOpen.value = false
   // TODO: 實現個人設定頁面
-  alert('個人設定功能開發中...')
+  toast.value?.showInfo('個人設定', '個人設定功能開發中，請稍後再試...')
 }
 
 // 登出功能

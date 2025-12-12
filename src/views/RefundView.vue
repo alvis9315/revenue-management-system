@@ -10,10 +10,10 @@
       <BaseCard>
         <div class="flex items-center justify-between cursor-pointer" @click="toggleSearchPanel">
           <div class="flex items-center">
-            <svg class="w-5 h-5 text-gray-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <h3 class="text-lg font-medium text-gray-900 me-1">單據查詢</h3>
+            <svg class="w-5 h-5 text-blue-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
-            <h3 class="text-lg font-medium text-gray-900">單據查詢</h3>
           </div>
           <svg 
             :class="['w-5 h-5 transition-transform', searchPanelOpen ? 'rotate-180' : '']"
@@ -53,17 +53,12 @@
             <div class="flex justify-end space-x-2">
               <button type="button" @click="resetSearch" class="btn-secondary">重設</button>
               <button type="submit" :disabled="loading" class="btn-primary">
-                {{ loading ? '查詢中...' : '查詢單據' }}
+                {{ loading ? '查詢中...' : '查詢' }}
               </button>
             </div>
           </form>
         </div>
 
-        <div v-if="error" class="mt-4 p-3 bg-red-50 border border-red-200 rounded text-red-700">
-          {{ error }}
-        </div>
-
-        <!-- 查詢結果 -->
         <div v-if="searchResults.length > 0" class="mt-8">
           <h3 class="text-lg font-medium text-gray-900 mb-4">查詢結果 ({{ searchResults.length }} 筆)</h3>
           <div class="overflow-x-auto">
@@ -145,9 +140,9 @@
 
       <!-- 可退費單據清單 -->
       <BaseCard>
-        <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center mb-4">
           <h3 class="text-lg font-medium text-gray-900">可退費單據清單</h3>
-          <span v-if="refundableDocuments.length > 0" class="bg-blue-100 text-blue-700 py-1 px-3 rounded-full text-sm font-medium">
+          <span v-if="refundableDocuments.length > 0" class="text-blue-500 py-1 px-3 text-sm font-medium">
             {{ refundableDocuments.length }} 筆
           </span>
         </div>
@@ -214,29 +209,36 @@
           </table>
         </div>
       </BaseCard>
-
-      <!-- 成功訊息 -->
-      <div v-if="successMessage" class="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg">
-        {{ successMessage }}
-      </div>
-
-      <!-- 錯誤訊息 -->
-      <div v-if="error" class="fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg">
-        {{ error }}
-      </div>
     </div>
+
+    <!-- 退費確認對話框 -->
+    <BaseConfirmDialog
+      :show="confirmDialog.show"
+      title="確認退費單據"
+      :message="confirmDialog.document ? `確定要對以下單據執行退費嗎？\n\n單據編號：${confirmDialog.document.number}\n申請人：${confirmDialog.document.applicantName}\n金額：$${confirmDialog.document.amount?.toLocaleString()}\n\n退費後單據狀態將變更為「已退費」。` : ''"
+      confirmText="確定退費"
+      cancelText="取消"
+      type="warning"
+      confirm-button-variant="danger"
+      @confirm="confirmRefund"
+      @cancel="cancelRefund"
+      @close="cancelRefund"
+    />
   </AppLayout>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
+import { useToast } from 'vue-toastification'
 import AppLayout from '../components/layout/AppLayout.vue'
 import BaseCard from '../components/common/BaseCard.vue'
 import BaseTag from '../components/common/BaseTag.vue'
+import BaseConfirmDialog from '../components/common/BaseConfirmDialog.vue'
 import { useAppStore } from '../stores/useAppStore.js'
 import { processRefund as apiProcessRefund } from '../mock/mockApi.js'
 
 const store = useAppStore()
+const toast = useToast()
 
 // 搜尋面板摺疊狀態（預設關閉）
 const searchPanelOpen = ref(false)
@@ -255,9 +257,13 @@ const searchResults = ref([])
 const hasSearched = ref(false)
 const loading = ref(false)
 const refunding = ref(false)
-const error = ref('')
-const successMessage = ref('')
 const selectedRefundDocument = ref(null)
+
+// 確認對話框狀態
+const confirmDialog = ref({
+  show: false,
+  document: null
+})
 
 // 計算可退費的單據清單
 const refundableDocuments = computed(() => {
@@ -266,8 +272,6 @@ const refundableDocuments = computed(() => {
 
 function queryDocument() {
   loading.value = true
-  error.value = ''
-  successMessage.value = ''
   hasSearched.value = true
   
   // 建立搜尋條件 - 只對可退費單據搜尋
@@ -289,9 +293,6 @@ function queryDocument() {
   
   setTimeout(() => {
     searchResults.value = filteredDocuments
-    if (filteredDocuments.length === 0 && hasSearched.value) {
-      error.value = ''
-    }
     loading.value = false
   }, 500)
 }
@@ -304,8 +305,6 @@ function resetSearch() {
   }
   searchResults.value = []
   hasSearched.value = false
-  error.value = ''
-  successMessage.value = ''
 }
 
 async function processRefund() {
@@ -360,11 +359,27 @@ async function processRefund() {
 }
 
 // 從清單選擇單據進行退費
-async function selectDocumentForRefund(document) {
+function selectDocumentForRefund(document) {
+  confirmDialog.value = {
+    show: true,
+    document: document
+  }
+}
+
+function confirmRefund() {
+  if (!confirmDialog.value.document) return
+  
+  executeRefund(confirmDialog.value.document)
+  confirmDialog.value = { show: false, document: null }
+}
+
+function cancelRefund() {
+  confirmDialog.value = { show: false, document: null }
+}
+
+async function executeRefund(document) {
   selectedRefundDocument.value = document
   refunding.value = true
-  error.value = ''
-  successMessage.value = ''
   
   try {
     const result = await apiProcessRefund(document.number)
@@ -372,16 +387,10 @@ async function selectDocumentForRefund(document) {
     // 更新單據狀態為已退費
     store.updateDocumentStatus(document.id, '已退費')
     
-    successMessage.value = `單據 ${document.number} 退費成功`
-    setTimeout(() => {
-      successMessage.value = ''
-    }, 5000)
+    toast.success(`單據 ${document.number} 退費成功`)
     
   } catch (err) {
-    error.value = err.message
-    setTimeout(() => {
-      error.value = ''
-    }, 5000)
+    toast.error(err.message || '退費失敗，請聯繫系統管理員')
   } finally {
     refunding.value = false
     selectedRefundDocument.value = null

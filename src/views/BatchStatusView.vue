@@ -101,6 +101,7 @@ async function runBatchJob() {
 function getStatusClasses(status) {
   const statusClasses = {
     '完成': 'bg-green-100 text-green-800',
+    '已完成': 'bg-green-100 text-green-800',
     '執行中': 'bg-blue-100 text-blue-800',
     '失敗': 'bg-red-100 text-red-800'
   }

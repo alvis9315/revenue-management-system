@@ -10,7 +10,15 @@
       <!-- 搜尋條件 -->
       <BaseCard>
         <div class="flex items-center justify-between cursor-pointer" @click="toggleSearchPanel">
-          <h3 class="text-lg font-medium text-gray-900">搜尋條件</h3>
+          <div class="flex items-center space-x-2">
+            <h3 class="text-lg font-medium text-gray-900">搜尋條件</h3>
+            <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+              <circle cx="6" cy="6" r="2" />
+              <circle cx="14" cy="12" r="2" />
+              <circle cx="10" cy="18" r="2" />
+            </svg>
+          </div>
           <svg 
             :class="['w-5 h-5 transition-transform', searchPanelOpen ? 'rotate-180' : '']"
             fill="none" 
@@ -219,18 +227,41 @@
         </div>
       </div>
     </div>
+
+    <!-- 作廢確認對話框 -->
+    <BaseConfirmDialog
+      :show="confirmDialog.show"
+      title="確認作廢單據"
+      :message="confirmDialog.document ? `確定要作廢單據 ${confirmDialog.document.number} 嗎？\n\n此操作將無法復原，請謹慎確認。` : ''"
+      confirmText="確定作廢"
+      cancelText="取消"
+      type="danger"
+      confirm-button-variant="danger"
+      @confirm="handleCancelConfirm"
+      @cancel="handleCancelCancel"
+      @close="handleCancelCancel"
+    />
   </AppLayout>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
+import { useToast } from 'vue-toastification'
 import AppLayout from '../components/layout/AppLayout.vue'
 import BaseCard from '../components/common/BaseCard.vue'
 import BaseTable from '../components/common/BaseTable.vue'
 import BaseTag from '../components/common/BaseTag.vue'
+import BaseConfirmDialog from '../components/common/BaseConfirmDialog.vue'
 import { useAppStore } from '../stores/useAppStore.js'
 
 const store = useAppStore()
+const toast = useToast()
+
+// 確認對話框狀態
+const confirmDialog = ref({
+  show: false,
+  document: null
+})
 
 // 部門選項資料
 const departments = ref([
@@ -365,8 +396,21 @@ function viewDocument(document) {
 }
 
 function cancelDocument(document) {
-  if (confirm(`確定要已作廢單據 ${document.number} 嗎？`)) {
-    store.updateDocumentStatus(document.id, '已作廢')
+  confirmDialog.value = {
+    show: true,
+    document: document
   }
+}
+
+function handleCancelConfirm() {
+  if (confirmDialog.value.document) {
+    store.updateDocumentStatus(confirmDialog.value.document.id, '已作廢')
+    toast.success(`單據 ${confirmDialog.value.document.number} 已作廢`)
+  }
+  confirmDialog.value = { show: false, document: null }
+}
+
+function handleCancelCancel() {
+  confirmDialog.value = { show: false, document: null }
 }
 </script>

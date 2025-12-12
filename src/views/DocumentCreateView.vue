@@ -76,9 +76,9 @@
               ></textarea>
             </div>
 
-            <div class="flex space-x-3">
-              <button type="submit" class="btn-primary">新增單據</button>
-              <button type="button" @click="resetForm" class="btn-secondary">重設表單</button>
+            <div class="flex space-x-3 justify-end">
+              <button type="submit" class="btn-primary">新增</button>
+              <button type="button" @click="resetForm" class="btn-secondary">重設</button>
             </div>
           </form>
         </BaseCard>
@@ -105,15 +105,26 @@
               <template #actions="{ row }">
                 <button
                   @click="editDocument(row)"
-                  class="text-blue-600 hover:text-blue-800 text-sm mr-3"
+                  class="inline-flex items-center px-3 py-1.5 bg-blue-100 text-blue-700 hover:bg-blue-200 hover:text-blue-800 text-sm font-medium rounded-md transition-colors mr-2"
                 >
+                  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
                   編輯
                 </button>
                 <button
                   @click="cancelDocument(row)"
-                  class="text-red-600 hover:text-red-800 text-sm"
                   :disabled="row.status === '作廢'"
+                  :class="[
+                    'inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md transition-colors',
+                    row.status === '作廢' 
+                      ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                      : 'bg-red-100 text-red-700 hover:bg-red-200 hover:text-red-800'
+                  ]"
                 >
+                  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
                   作廢
                 </button>
               </template>
@@ -124,24 +135,36 @@
           </div>
         </BaseCard>
       </div>
-
-      <!-- 成功訊息 -->
-      <div v-if="successMessage" class="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg">
-        {{ successMessage }}
-      </div>
     </div>
+
+    <!-- 作廢確認對話框 -->
+    <BaseConfirmDialog
+      :show="confirmDialog.show"
+      title="確認作廢單據"
+      :message="confirmDialog.document ? `確定要作廢單據 ${confirmDialog.document.number} 嗎？\n\n此操作將無法復原，請謹慎確認。` : ''"
+      confirmText="確定作廢"
+      cancelText="取消"
+      type="danger"
+      confirm-button-variant="danger"
+      @confirm="handleCancelConfirm"
+      @cancel="handleCancelCancel"
+      @close="handleCancelCancel"
+    />
   </AppLayout>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { useToast } from 'vue-toastification'
 import AppLayout from '../components/layout/AppLayout.vue'
 import BaseCard from '../components/common/BaseCard.vue'
 import BaseTable from '../components/common/BaseTable.vue'
 import BaseTag from '../components/common/BaseTag.vue'
+import BaseConfirmDialog from '../components/common/BaseConfirmDialog.vue'
 import { useAppStore } from '../stores/useAppStore.js'
 
 const store = useAppStore()
+const toast = useToast()
 
 const form = ref({
   number: '',
@@ -152,7 +175,11 @@ const form = ref({
   notes: ''
 })
 
-const successMessage = ref('')
+// 確認對話框狀態
+const confirmDialog = ref({
+  show: false,
+  document: null
+})
 
 const documentColumns = [
   { key: 'number', title: '單據編號' },
@@ -198,10 +225,7 @@ function handleSubmit() {
 
   store.addDocument(newDocument)
   
-  successMessage.value = `單據 ${newDocument.number} 建立成功！`
-  setTimeout(() => {
-    successMessage.value = ''
-  }, 3000)
+  toast.success(`單據 ${newDocument.number} 建立成功！`)
   
   resetForm()
 }
@@ -221,13 +245,22 @@ function editDocument(document) {
 }
 
 function cancelDocument(document) {
-  if (confirm(`確定要作廢單據 ${document.number} 嗎？`)) {
-    store.updateDocumentStatus(document.id, '作廢')
-    successMessage.value = `單據 ${document.number} 已作廢`
-    setTimeout(() => {
-      successMessage.value = ''
-    }, 3000)
+  confirmDialog.value = {
+    show: true,
+    document: document
   }
+}
+
+function handleCancelConfirm() {
+  if (confirmDialog.value.document) {
+    store.updateDocumentStatus(confirmDialog.value.document.id, '作廢')
+    toast.success(`單據 ${confirmDialog.value.document.number} 已作廢`)
+  }
+  confirmDialog.value = { show: false, document: null }
+}
+
+function handleCancelCancel() {
+  confirmDialog.value = { show: false, document: null }
 }
 
 onMounted(() => {

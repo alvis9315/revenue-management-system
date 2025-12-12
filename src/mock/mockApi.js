@@ -4,7 +4,7 @@ import { mockBankRecords, mockDocuments } from './mockData.js'
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 
 // 模擬匯入核銷檔案
-export async function importReconciliationFile() {
+export async function importReconciliationFile(file = null) {
   await delay(1000) // 模擬處理時間
   
   const results = {
@@ -13,6 +13,58 @@ export async function importReconciliationFile() {
     documentNotFound: []
   }
   
+  // 如果有實際檔案，解析檔案內容
+  if (file) {
+    try {
+      const csvContent = await readFileContent(file)
+      const parsedData = parseCSV(csvContent)
+      
+      // 處理每一筆資料
+      parsedData.forEach((record, index) => {
+        const importId = `import_${index + 1}_${Date.now()}`
+        
+        if (record.documentNumber.startsWith('DOC202401')) {
+          // 正常單據，模擬核銷成功
+          if (parseInt(record.documentNumber.slice(-3)) <= 800) {
+            results.success.push({
+              importId,
+              documentNumber: record.documentNumber,
+              bankAmount: parseInt(record.amount),
+              depositDate: record.date,
+              remarks: record.remarks
+            })
+          } else {
+            // 金額不符的情況
+            const systemAmount = parseInt(record.amount) + Math.floor(Math.random() * 1000) - 500
+            results.amountMismatch.push({
+              importId,
+              documentNumber: record.documentNumber,
+              bankAmount: parseInt(record.amount),
+              systemAmount,
+              depositDate: record.date,
+              reason: `銀行金額 ${parseInt(record.amount)} 與系統金額 ${systemAmount} 不符`
+            })
+          }
+        } else if (record.documentNumber.startsWith('NOTFOUND')) {
+          // 找不到單據
+          results.documentNotFound.push({
+            importId,
+            documentNumber: record.documentNumber,
+            bankAmount: parseInt(record.amount),
+            depositDate: record.date,
+            reason: `系統中找不到單據編號 ${record.documentNumber}`
+          })
+        }
+      })
+      
+      return results
+    } catch (error) {
+      console.error('檔案解析錯誤:', error)
+      // 如果檔案解析失敗，回退到模擬資料
+    }
+  }
+  
+  // 沒有檔案或解析失敗時，使用原本的模擬邏輯
   mockBankRecords.forEach(record => {
     if (record.status === 'matched') {
       results.success.push({
@@ -36,6 +88,39 @@ export async function importReconciliationFile() {
   })
   
   return results
+}
+
+// 讀取檔案內容
+function readFileContent(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = (e) => resolve(e.target.result)
+    reader.onerror = reject
+    reader.readAsText(file, 'UTF-8')
+  })
+}
+
+// 解析 CSV 內容
+function parseCSV(csvContent) {
+  const lines = csvContent.split('\n')
+  const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim())
+  const data = []
+  
+  for (let i = 1; i < lines.length; i++) {
+    if (lines[i].trim()) {
+      const values = lines[i].split(',').map(v => v.replace(/"/g, '').trim())
+      if (values.length >= 4) {
+        data.push({
+          documentNumber: values[0],
+          amount: values[1],
+          date: values[2],
+          remarks: values[3]
+        })
+      }
+    }
+  }
+  
+  return data
 }
 
 // 模擬執行批次作業
