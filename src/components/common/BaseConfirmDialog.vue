@@ -126,12 +126,12 @@ const cancelButtonClass = computed(() => {
   return 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:ring-blue-500'
 })
 
-function handleConfirm() {
+const handleConfirm = () => {
   emit('confirm')
   emit('close')
 }
 
-function handleCancel() {
+const handleCancel = () => {
   emit('cancel')
   emit('close')
 }

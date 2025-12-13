@@ -1,43 +1,43 @@
 <template>
   <AppLayout>
-    <div class="space-y-6">
+    <div class="space-y-4 sm:space-y-6">
       <div>
-        <h2 class="text-2xl font-bold text-slate-800">核銷匯入</h2>
-        <p class="text-gray-600 mt-1">匯入金融機構繳費明細進行核銷比對</p>
+        <h2 class="text-xl sm:text-2xl font-bold text-slate-800">核銷匯入</h2>
+        <p class="text-sm sm:text-base text-gray-600 mt-1">匯入金融機構繳費明細進行核銷比對</p>
       </div>
 
       <!-- 匯入區塊 -->
       <div class="bg-white rounded-lg border border-gray-200 shadow-sm">
         <!-- 可折疊標題 -->
-        <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between cursor-pointer" @click="isImportSectionCollapsed = !isImportSectionCollapsed">
+        <div class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 flex items-center justify-between cursor-pointer" @click="isImportSectionCollapsed = !isImportSectionCollapsed">
           <div class="flex items-center">
-            <h3 class="text-lg font-semibold text-gray-900">檔案匯入</h3>
-            <Icon icon="heroicons:cloud-arrow-up" class="w-5 h-5 text-blue-500 ml-2" />
+            <h3 class="text-base sm:text-lg font-semibold text-gray-900">檔案匯入</h3>
+            <Icon icon="heroicons:cloud-arrow-up" class="w-4 h-4 sm:w-5 sm:h-5 text-blue-500 ml-2" />
           </div>
-          <Icon icon="heroicons:chevron-down" class="w-5 h-5 text-gray-500 transition-transform duration-200" :class="{ 'rotate-180': isImportSectionCollapsed }" />
+          <Icon icon="heroicons:chevron-down" class="w-4 h-4 sm:w-5 sm:h-5 text-gray-500 transition-transform duration-200" :class="{ 'rotate-180': isImportSectionCollapsed }" />
         </div>
         
         <!-- 可折疊內容 -->
-        <div v-show="!isImportSectionCollapsed" class="p-6">
+        <div v-show="!isImportSectionCollapsed" class="p-4 sm:p-6">
           <div class="space-y-4">
           <!-- 格式說明和範例下載 -->
-          <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
-            <div class="flex items-center justify-between">
+          <div class="bg-gray-50 border border-gray-200 rounded-lg p-3 sm:p-4">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
               <div>
                 <h4 class="text-sm font-medium text-gray-500 mb-1">檔案格式說明</h4>
-                <p class="text-sm text-gray-500">請上傳包含單據編號、金額、繳費日期等欄位的 CSV 或 Excel 檔案</p>
+                <p class="text-xs sm:text-sm text-gray-500">請上傳包含單據編號、金額、繳費日期等欄位的 CSV 或 Excel 檔案</p>
               </div>
-              <div class="flex space-x-2">
+              <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
                 <button 
                   @click="downloadTemplate"
-                  class="inline-flex items-center px-3 py-2 bg-gray-500 text-white text-sm font-medium rounded-md hover:bg-gray-700 transition-colors"
+                  class="inline-flex items-center justify-center px-3 py-2 bg-gray-500 text-white text-sm font-medium rounded-md hover:bg-gray-700 transition-colors"
                 >
                   <Icon icon="heroicons:document-arrow-down" class="w-4 h-4 mr-2" />
                   下載範例檔
                 </button>
                 <button 
                   @click="downloadTestData"
-                  class="inline-flex items-center px-3 py-2 bg-purple-500 text-white text-sm font-medium rounded-md hover:bg-purple-700 transition-colors"
+                  class="inline-flex items-center justify-center px-3 py-2 bg-purple-500 text-white text-sm font-medium rounded-md hover:bg-purple-700 transition-colors"
                 >
                   <Icon icon="heroicons:beaker" class="w-4 h-4 mr-2" />
                   測試資料 (1000筆)
@@ -56,32 +56,32 @@
                 accept=".csv,.xlsx,.xls" 
                 @change="handleFileSelect"
               />
-              <div class="flex items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-colors cursor-pointer">
-                <div class="text-center">
-                  <Icon icon="heroicons:document-text" class="w-12 h-12 mx-auto text-gray-400 mb-4" />
-                  <p class="text-gray-600 mb-2">
+              <div class="flex items-center justify-center w-full h-28 sm:h-32 border-2 border-dashed border-gray-300 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-colors cursor-pointer">
+                <div class="text-center px-4">
+                  <Icon icon="heroicons:document-text" class="w-10 h-10 sm:w-12 sm:h-12 mx-auto text-gray-400 mb-2 sm:mb-4" />
+                  <p class="text-sm sm:text-base text-gray-600 mb-1 sm:mb-2">
                     <span class="font-medium text-primary-500 hover:text-primary-800">點擊選擇檔案</span>
-                    或拖拽檔案至此處
+                    <span class="hidden sm:inline">或拖拽檔案至此處</span>
                   </p>
-                  <p class="text-sm text-gray-500">支援 CSV, XLSX, XLS 格式</p>
+                  <p class="text-xs sm:text-sm text-gray-500">支援 CSV, XLSX, XLS 格式</p>
                 </div>
               </div>
               <!-- 檔案名稱顯示在拖放區域下方 -->
-              <div v-if="selectedFile" class="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+              <div v-if="selectedFile" class="mt-3 p-2 sm:p-3 bg-green-50 border border-green-200 rounded-lg">
                 <div class="flex items-center">
-                  <Icon icon="heroicons:check-circle" class="w-5 h-5 text-green-600 mr-2" />
-                  <span class="text-sm text-green-700 font-medium">已選擇檔案：{{ selectedFile.name }}</span>
+                  <Icon icon="heroicons:check-circle" class="w-4 h-4 sm:w-5 sm:h-5 text-green-600 mr-2 flex-shrink-0" />
+                  <span class="text-xs sm:text-sm text-green-700 font-medium truncate">已選擇檔案：{{ selectedFile.name }}</span>
                 </div>
               </div>
             </div>
           </div>
           <div class="flex justify-end">
-            <div class="relative group">
+            <div class="relative group w-full sm:w-auto">
               <button 
                 @click="executeImport" 
                 :disabled="importing || !selectedFile" 
                 :class="[
-                  'inline-flex items-center px-4 py-2 text-sm font-medium rounded-md transition-all duration-200',
+                  'w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-md transition-all duration-200',
                   (importing || !selectedFile) 
                     ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
                     : 'bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800'
@@ -94,7 +94,7 @@
               <!-- Tooltip -->
               <div 
                 v-if="!selectedFile && !importing"
-                class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-md whitespace-nowrap opacity-0 pointer-events-none transition-opacity duration-200 group-hover:opacity-100 shadow-lg"
+                class="hidden sm:block absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-md whitespace-nowrap opacity-0 pointer-events-none transition-opacity duration-200 group-hover:opacity-100 shadow-lg"
                 style="z-index: 1000;"
               >
                 請先選擇要匯入的檔案
@@ -118,140 +118,282 @@
         >
           <!-- 核銷成功 Tab -->
           <template #tab-success>
-            <BaseVirtualTable
-              :columns="successColumns"
-              :items="importResult.success"
-              height="500px"
-              :virtual-threshold="50"
-              :get-item-key="(item) => item.importId"
-              empty-text="暫無成功紀錄"
-            >
-              <template #cell-documentNumber="{ item }">
-                <span class="font-medium text-gray-900">{{ item.documentNumber }}</span>
-              </template>
-              
-              <template #cell-bankAmount="{ item }">
-                <span class="text-green-600 font-medium">${{ item.bankAmount.toLocaleString() }}</span>
-              </template>
-              
-              <template #cell-depositDate="{ item }">
-                <span class="text-gray-600">{{ item.depositDate }}</span>
-              </template>
-              
-              <template #cell-actions="{ item }">
-                <div class="flex items-center">
-                  <button 
-                    @click="viewSuccessDetail(item)"
-                    class="inline-flex flex-row items-center justify-center px-3 py-1.5 bg-blue-100 text-blue-700 hover:bg-blue-200 hover:text-blue-800 text-sm font-medium rounded-md transition-colors"
-                  >
-                    <Icon icon="heroicons:eye" class="w-4 h-4 mr-1 flex-shrink-0" />
-                    <span>檢視</span>
-                  </button>
+            <!-- 桌面版：表格 -->
+            <div class="hidden sm:block">
+              <BaseVirtualTable
+                :columns="successColumns"
+                :items="importResult.success"
+                height="500px"
+                :virtual-threshold="50"
+                :get-item-key="(item) => item.importId"
+                empty-text="暫無成功紀錄"
+              >
+                <template #cell-documentNumber="{ item }">
+                  <span class="font-medium text-gray-900">{{ item.documentNumber }}</span>
+                </template>
+                
+                <template #cell-bankAmount="{ item }">
+                  <span class="text-green-600 font-medium">${{ item.bankAmount.toLocaleString() }}</span>
+                </template>
+                
+                <template #cell-depositDate="{ item }">
+                  <span class="text-gray-600">{{ item.depositDate }}</span>
+                </template>
+                
+                <template #cell-actions="{ item }">
+                  <div class="flex items-center space-x-2">
+                    <button 
+                      @click="viewSuccessDetail(item)"
+                      class="inline-flex flex-row items-center justify-center px-3 py-1.5 bg-blue-100 text-blue-700 hover:bg-blue-200 hover:text-blue-800 text-sm font-medium rounded-md transition-colors"
+                    >
+                      <Icon icon="heroicons:eye" class="w-4 h-4 mr-1 flex-shrink-0" />
+                      <span>檢視</span>
+                    </button>
+                  </div>
+                </template>
+              </BaseVirtualTable>
+            </div>
+            
+            <!-- 手機版：卡片 -->
+            <div class="sm:hidden space-y-3">
+              <div v-if="!importResult.success.length" class="text-center py-12 text-gray-500">
+                暫無成功紀錄
+              </div>
+              <div 
+                v-for="item in importResult.success" 
+                :key="item.importId"
+                class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm"
+              >
+                <div class="space-y-2">
+                  <div class="flex justify-between items-start">
+                    <div>
+                      <div class="text-xs text-gray-500 mb-1">單據編號</div>
+                      <div class="font-medium text-gray-900">{{ item.documentNumber }}</div>
+                    </div>
+                    <button 
+                      @click="viewSuccessDetail(item)"
+                      class="inline-flex items-center px-3 py-1.5 bg-blue-100 text-blue-700 hover:bg-blue-200 text-xs font-medium rounded-md"
+                    >
+                      <Icon icon="heroicons:eye" class="w-3 h-3 mr-1" />
+                      檢視
+                    </button>
+                  </div>
+                  <div class="flex justify-between items-center pt-2 border-t border-gray-100">
+                    <div>
+                      <div class="text-xs text-gray-500">金額</div>
+                      <div class="text-green-600 font-semibold text-lg">${{ item.bankAmount.toLocaleString() }}</div>
+                    </div>
+                    <div class="text-right">
+                      <div class="text-xs text-gray-500">繳費日期</div>
+                      <div class="text-gray-700 text-sm">{{ item.depositDate }}</div>
+                    </div>
+                  </div>
                 </div>
-              </template>
-            </BaseVirtualTable>
+              </div>
+            </div>
           </template>
           
           <!-- 金額不符 Tab -->
           <template #tab-mismatch>
-            <BaseVirtualTable
-              :columns="mismatchColumns"
-              :items="importResult.amountMismatch"
-              height="500px"
-              :virtual-threshold="50"
-              :item-height="80"
-              :get-item-key="(item) => item.importId"
-              empty-text="暫無金額不符紀錄"
-            >
-              <template #cell-documentNumber="{ item }">
-                <span class="font-medium text-gray-900">{{ item.documentNumber }}</span>
-              </template>
-              
-              <template #cell-bankAmount="{ item }">
-                <span class="text-gray-600">${{ item.bankAmount.toLocaleString() }}</span>
-              </template>
-              
-              <template #cell-systemAmount="{ item }">
-                <span class="text-gray-600">${{ item.systemAmount.toLocaleString() }}</span>
-              </template>
-              
-              <template #cell-difference="{ item }">
-                <span class="text-red-600 font-medium">
-                  ${{ Math.abs(item.bankAmount - item.systemAmount).toLocaleString() }}
-                </span>
-              </template>
-              
-              <template #cell-reason="{ item }">
-                <div class="text-red-600 text-sm">
-                  <div class="font-medium">金額不符</div>
-                  <div class="text-xs text-gray-500 mt-0.5">
-                    差額：${{ Math.abs(item.bankAmount - item.systemAmount).toLocaleString() }}
+            <!-- 桌面版：表格 -->
+            <div class="hidden sm:block">
+              <BaseVirtualTable
+                :columns="mismatchColumns"
+                :items="importResult.amountMismatch"
+                height="500px"
+                :virtual-threshold="50"
+                :item-height="80"
+                :get-item-key="(item) => item.importId"
+                empty-text="暫無金額不符紀錄"
+              >
+                <template #cell-documentNumber="{ item }">
+                  <span class="font-medium text-gray-900">{{ item.documentNumber }}</span>
+                </template>
+                
+                <template #cell-bankAmount="{ item }">
+                  <span class="text-gray-600">${{ item.bankAmount.toLocaleString() }}</span>
+                </template>
+                
+                <template #cell-systemAmount="{ item }">
+                  <span class="text-gray-600">${{ item.systemAmount.toLocaleString() }}</span>
+                </template>
+                
+                <template #cell-difference="{ item }">
+                  <span class="text-red-600 font-medium">
+                    ${{ Math.abs(item.bankAmount - item.systemAmount).toLocaleString() }}
+                  </span>
+                </template>
+                
+                <template #cell-reason="{ item }">
+                  <div class="text-red-600 text-sm">
+                    <div class="font-medium">金額不符</div>
+                    <div class="text-xs text-gray-500 mt-0.5">
+                      差額：${{ Math.abs(item.bankAmount - item.systemAmount).toLocaleString() }}
+                    </div>
+                  </div>
+                </template>
+                
+                <template #cell-actions="{ item }">
+                  <div class="flex items-center space-x-1">
+                    <button 
+                      @click="handleMismatch(item)"
+                      class="inline-flex flex-row items-center justify-center px-3 py-1.5 bg-blue-100 text-blue-700 hover:bg-blue-200 hover:text-blue-800 text-sm font-medium rounded-md transition-colors"
+                    >
+                      <Icon icon="heroicons:pencil" class="w-4 h-4 mr-1 flex-shrink-0" />
+                      <span>處理</span>
+                    </button>
+                    <button 
+                      @click="viewMismatchDetail(item)"
+                      class="inline-flex flex-row items-center justify-center px-3 py-1.5 bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-gray-800 text-sm font-medium rounded-md transition-colors"
+                    >
+                      <Icon icon="heroicons:eye" class="w-4 h-4 mr-1 flex-shrink-0" />
+                      <span>檢視</span>
+                    </button>
+                  </div>
+                </template>
+              </BaseVirtualTable>
+            </div>
+            
+            <!-- 手機版：卡片 -->
+            <div class="sm:hidden space-y-3">
+              <div v-if="!importResult.amountMismatch.length" class="text-center py-12 text-gray-500">
+                暫無金額不符紀錄
+              </div>
+              <div 
+                v-for="item in importResult.amountMismatch" 
+                :key="item.importId"
+                class="bg-white border-l-4 border-red-500 rounded-lg p-4 shadow-sm"
+              >
+                <div class="space-y-3">
+                  <div class="flex justify-between items-start">
+                    <div>
+                      <div class="text-xs text-gray-500 mb-1">單據編號</div>
+                      <div class="font-medium text-gray-900">{{ item.documentNumber }}</div>
+                    </div>
+                    <div class="flex space-x-1">
+                      <button 
+                        @click="handleMismatch(item)"
+                        class="inline-flex items-center px-2 py-1.5 bg-blue-100 text-blue-700 hover:bg-blue-200 text-xs font-medium rounded-md"
+                      >
+                        <Icon icon="heroicons:pencil" class="w-3 h-3 mr-1" />
+                        處理
+                      </button>
+                      <button 
+                        @click="viewMismatchDetail(item)"
+                        class="inline-flex items-center px-2 py-1.5 bg-gray-100 text-gray-700 hover:bg-gray-200 text-xs font-medium rounded-md"
+                      >
+                        <Icon icon="heroicons:eye" class="w-3 h-3" />
+                      </button>
+                    </div>
+                  </div>
+                  <div class="grid grid-cols-2 gap-3 pt-2 border-t border-gray-100">
+                    <div>
+                      <div class="text-xs text-gray-500">銀行金額</div>
+                      <div class="text-gray-700 font-medium">${{ item.bankAmount.toLocaleString() }}</div>
+                    </div>
+                    <div>
+                      <div class="text-xs text-gray-500">系統金額</div>
+                      <div class="text-gray-700 font-medium">${{ item.systemAmount.toLocaleString() }}</div>
+                    </div>
+                  </div>
+                  <div class="bg-red-50 rounded-md p-2">
+                    <div class="text-xs text-red-600 font-medium">金額不符</div>
+                    <div class="text-sm text-red-700 font-semibold">
+                      差額：${{ Math.abs(item.bankAmount - item.systemAmount).toLocaleString() }}
+                    </div>
                   </div>
                 </div>
-              </template>
-              
-              <template #cell-actions="{ item }">
-                <div class="flex flex-col space-y-1">
-                  <button 
-                    @click="handleMismatch(item)"
-                    class="inline-flex items-center justify-center px-2 py-1 bg-blue-100 text-blue-700 hover:bg-blue-200 hover:text-blue-800 text-xs font-medium rounded transition-colors w-full"
-                  >
-                    <Icon icon="heroicons:pencil" class="w-3 h-3 mr-1" />
-                    <span>處理</span>
-                  </button>
-                  <button 
-                    @click="viewMismatchDetail(item)"
-                    class="inline-flex items-center justify-center px-2 py-1 bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-gray-800 text-xs font-medium rounded transition-colors w-full"
-                  >
-                    <Icon icon="heroicons:eye" class="w-3 h-3 mr-1" />
-                    <span>檢視</span>
-                  </button>
-                </div>
-              </template>
-            </BaseVirtualTable>
+              </div>
+            </div>
           </template>
           
           <!-- 待建檔 Tab -->
           <template #tab-notFound>
-            <BaseVirtualTable
-              :columns="notFoundColumns"
-              :items="importResult.documentNotFound"
-              height="500px"
-              :virtual-threshold="50"
-              :get-item-key="(item) => item.importId"
-              empty-text="暫無待建檔紀錄"
-            >
-              <template #cell-documentNumber="{ item }">
-                <span class="font-medium text-gray-900">{{ item.documentNumber }}</span>
-              </template>
-              
-              <template #cell-bankAmount="{ item }">
-                <span class="text-gray-600">${{ item.bankAmount.toLocaleString() }}</span>
-              </template>
-              
-              <template #cell-reason="{ item }">
-                <span class="text-red-600 text-sm">{{ item.reason }}</span>
-              </template>
-              
-              <template #cell-actions="{ item }">
-                <div class="flex items-center">
-                  <button 
-                    @click="createDocument(item)"
-                    class="inline-flex items-center px-3 py-1.5 bg-blue-100 text-blue-700 hover:bg-blue-200 hover:text-blue-800 text-sm font-medium rounded-md transition-colors mr-1"
-                  >
-                    <Icon icon="heroicons:plus" class="w-4 h-4 mr-1" />
-                    <span>建立</span>
-                  </button>
-                  <button 
-                    @click="viewNotFoundDetail(item)"
-                    class="inline-flex flex-row items-center justify-center px-3 py-1.5 bg-blue-100 text-blue-700 hover:bg-blue-200 hover:text-blue-800 text-sm font-medium rounded-md transition-colors"
-                  >
-                    <Icon icon="heroicons:eye" class="w-4 h-4 mr-1 flex-shrink-0" />
-                    <span>檢視</span>
-                  </button>
+            <!-- 桌面版：表格 -->
+            <div class="hidden sm:block">
+              <BaseVirtualTable
+                :columns="notFoundColumns"
+                :items="importResult.documentNotFound"
+                height="500px"
+                :virtual-threshold="50"
+                :get-item-key="(item) => item.importId"
+                empty-text="暫無待建檔紀錄"
+              >
+                <template #cell-documentNumber="{ item }">
+                  <span class="font-medium text-gray-900">{{ item.documentNumber }}</span>
+                </template>
+                
+                <template #cell-bankAmount="{ item }">
+                  <span class="text-gray-600">${{ item.bankAmount.toLocaleString() }}</span>
+                </template>
+                
+                <template #cell-reason="{ item }">
+                  <span class="text-red-600 text-sm">{{ item.reason }}</span>
+                </template>
+                
+                <template #cell-actions="{ item }">
+                  <div class="flex flex-row items-center space-x-1">
+                    <button 
+                      @click="createDocument(item)"
+                      class="inline-flex flex-row items-center justify-center px-3 py-1.5 bg-blue-100 text-blue-700 hover:bg-blue-200 hover:text-blue-800 text-sm font-medium rounded-md transition-colors whitespace-nowrap"
+                    >
+                      <Icon icon="heroicons:plus" class="w-4 h-4 mr-1 flex-shrink-0" />
+                      <span>建立</span>
+                    </button>
+                    <button 
+                      @click="viewNotFoundDetail(item)"
+                      class="inline-flex flex-row items-center justify-center px-3 py-1.5 bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-gray-800 text-sm font-medium rounded-md transition-colors whitespace-nowrap"
+                    >
+                      <Icon icon="heroicons:eye" class="w-4 h-4 mr-1 flex-shrink-0" />
+                      <span>檢視</span>
+                    </button>
+                  </div>
+                </template>
+              </BaseVirtualTable>
+            </div>
+            
+            <!-- 手機版：卡片 -->
+            <div class="sm:hidden space-y-3">
+              <div v-if="!importResult.documentNotFound.length" class="text-center py-12 text-gray-500">
+                暫無待建檔紀錄
+              </div>
+              <div 
+                v-for="item in importResult.documentNotFound" 
+                :key="item.importId"
+                class="bg-white border-l-4 border-yellow-500 rounded-lg p-4 shadow-sm"
+              >
+                <div class="space-y-3">
+                  <div class="flex justify-between items-start">
+                    <div>
+                      <div class="text-xs text-gray-500 mb-1">單據編號</div>
+                      <div class="font-medium text-gray-900">{{ item.documentNumber }}</div>
+                    </div>
+                    <div class="flex space-x-1">
+                      <button 
+                        @click="createDocument(item)"
+                        class="inline-flex items-center px-2 py-1.5 bg-blue-100 text-blue-700 hover:bg-blue-200 text-xs font-medium rounded-md"
+                      >
+                        <Icon icon="heroicons:plus" class="w-3 h-3 mr-1" />
+                        建立
+                      </button>
+                      <button 
+                        @click="viewNotFoundDetail(item)"
+                        class="inline-flex items-center px-2 py-1.5 bg-gray-100 text-gray-700 hover:bg-gray-200 text-xs font-medium rounded-md"
+                      >
+                        <Icon icon="heroicons:eye" class="w-3 h-3" />
+                      </button>
+                    </div>
+                  </div>
+                  <div class="pt-2 border-t border-gray-100">
+                    <div class="text-xs text-gray-500 mb-1">金額</div>
+                    <div class="text-gray-900 font-semibold text-lg">${{ item.bankAmount.toLocaleString() }}</div>
+                  </div>
+                  <div class="bg-yellow-50 rounded-md p-2">
+                    <div class="text-xs text-yellow-700">{{ item.reason }}</div>
+                  </div>
                 </div>
-              </template>
-            </BaseVirtualTable>
+              </div>
+            </div>
           </template>
         </BaseTabs>
       </div>
@@ -400,36 +542,36 @@ const resultTabs = computed(() => [
 
 // 表格欄位配置
 const successColumns = [
-  { key: 'documentNumber', title: '單據編號', width: '200px' },
-  { key: 'bankAmount', title: '金額', width: '150px' },
-  { key: 'depositDate', title: '繳費日期', width: '150px' },
-  { key: 'actions', title: '操作', width: '150px' }
+  { key: 'documentNumber', title: '單據編號' },
+  { key: 'bankAmount', title: '金額' },
+  { key: 'depositDate', title: '繳費日期' },
+  { key: 'actions', title: '操作', width: 'auto' }
 ]
 
 const mismatchColumns = [
-  { key: 'documentNumber', title: '單據編號', width: '140px' },
-  { key: 'bankAmount', title: '銀行金額', width: '110px' },
-  { key: 'systemAmount', title: '系統金額', width: '110px' },
-  { key: 'difference', title: '差額', width: '90px' },
-  { key: 'reason', title: '原因', width: '200px' },
-  { key: 'actions', title: '操作', width: '200px' }
+  { key: 'documentNumber', title: '單據編號' },
+  { key: 'bankAmount', title: '銀行金額' },
+  { key: 'systemAmount', title: '系統金額' },
+  { key: 'difference', title: '差額' },
+  { key: 'reason', title: '原因' },
+  { key: 'actions', title: '操作', width: 'auto' }
 ]
 
 const notFoundColumns = [
-  { key: 'documentNumber', title: '單據編號', width: '200px' },
-  { key: 'bankAmount', title: '金額', width: '120px' },
-  { key: 'reason', title: '原因', width: '280px' },
-  { key: 'actions', title: '操作', width: '180px' }
+  { key: 'documentNumber', title: '單據編號' },
+  { key: 'bankAmount', title: '金額' },
+  { key: 'reason', title: '原因' },
+  { key: 'actions', title: '操作', width: 'auto' }
 ]
 
-function handleFileSelect(event) {
+const handleFileSelect = (event) => {
   const file = event.target.files[0]
   if (file) {
     selectedFile.value = file
   }
 }
 
-function downloadTemplate() {
+const downloadTemplate = () => {
   // 創建範例數據
   const templateData = [
     ['單據編號', '金額', '日期', '備註'],
@@ -457,7 +599,7 @@ function downloadTemplate() {
   document.body.removeChild(link)
 }
 
-function downloadTestData() {
+const downloadTestData = () => {
   // 生成 1000 筆測試資料
   const testData = [
     ['單據編號', '金額', '日期', '備註']
@@ -531,12 +673,12 @@ function downloadTestData() {
   toast.success('測試資料已下載！包含 1000 筆記錄 (800筆正常、150筆金額不符、50筆待建檔)')
 }
 
-function onTabChange(newTab, oldTab) {
+const onTabChange = (newTab, oldTab) => {
   console.log('切換到 Tab:', newTab)
 }
 
 // 按鈕操作處理函數
-function viewSuccessDetail(item) {
+const viewSuccessDetail = (item) => {
   viewDetailDialog.value = {
     show: true,
     item: item,
@@ -544,14 +686,14 @@ function viewSuccessDetail(item) {
   }
 }
 
-function handleMismatch(item) {
+const handleMismatch = (item) => {
   mismatchDialog.value = {
     show: true,
     item: item
   }
 }
 
-function confirmMismatchHandle() {
+const confirmMismatchHandle = () => {
   if (mismatchDialog.value.item) {
     toast.success('已將此筆記錄標記為待處理，將轉送給相關人員處理')
     // 這裡可以添加實際的處理邏輯
@@ -559,11 +701,11 @@ function confirmMismatchHandle() {
   mismatchDialog.value = { show: false, item: null }
 }
 
-function cancelMismatchHandle() {
+const cancelMismatchHandle = () => {
   mismatchDialog.value = { show: false, item: null }
 }
 
-function viewMismatchDetail(item) {
+const viewMismatchDetail = (item) => {
   viewDetailDialog.value = {
     show: true,
     item: item,
@@ -571,14 +713,14 @@ function viewMismatchDetail(item) {
   }
 }
 
-function createDocument(item) {
+const createDocument = (item) => {
   createDocDialog.value = {
     show: true,
     item: item
   }
 }
 
-function confirmCreateDocument() {
+const confirmCreateDocument = () => {
   if (createDocDialog.value.item) {
     toast.success('新單據已加入系統並可進行核銷')
     // 這裡可以添加實際的建立單據邏輯
@@ -586,11 +728,11 @@ function confirmCreateDocument() {
   createDocDialog.value = { show: false, item: null }
 }
 
-function cancelCreateDocument() {
+const cancelCreateDocument = () => {
   createDocDialog.value = { show: false, item: null }
 }
 
-function viewNotFoundDetail(item) {
+const viewNotFoundDetail = (item) => {
   viewDetailDialog.value = {
     show: true,
     item: item,
@@ -599,7 +741,7 @@ function viewNotFoundDetail(item) {
 }
 
 // 關閉檢視詳細資料對話框
-function closeViewDetailDialog() {
+const closeViewDetailDialog = () => {
   viewDetailDialog.value = { show: false, item: null, type: null }
 }
 
@@ -629,7 +771,7 @@ const viewDialogConfig = computed(() => {
   }
 })
 
-async function executeImport() {
+const executeImport = async () => {
   if (!selectedFile.value) {
     toast.warning('請先選擇檔案才能執行匯入')
     return

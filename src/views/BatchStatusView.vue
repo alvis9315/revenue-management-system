@@ -66,7 +66,7 @@ const batchColumns = [
   { key: 'successRate', title: '成功率' }
 ]
 
-async function runBatchJob() {
+const runBatchJob = async () => {
   running.value = true
   
   // 先加入一個執行中的記錄
@@ -98,7 +98,7 @@ async function runBatchJob() {
   }
 }
 
-function getStatusClasses(status) {
+const getStatusClasses = (status) => {
   const statusClasses = {
     '完成': 'bg-green-100 text-green-800',
     '已完成': 'bg-green-100 text-green-800',
@@ -108,12 +108,12 @@ function getStatusClasses(status) {
   return statusClasses[status] || 'bg-gray-100 text-gray-800'
 }
 
-function getSuccessRate(row) {
+const getSuccessRate = (row) => {
   if (row.totalCount === 0) return 0
   return Math.round((row.successCount / row.totalCount) * 100)
 }
 
-function getSuccessRateClass(row) {
+const getSuccessRateClass = (row) => {
   const rate = getSuccessRate(row)
   if (rate >= 95) return 'bg-green-500'
   if (rate >= 80) return 'bg-yellow-500'

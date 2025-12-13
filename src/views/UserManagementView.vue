@@ -1,7 +1,7 @@
 <template>
   <AppLayout>
     <div class="space-y-6">
-      <div class="flex items-center justify-between">
+        <div class="flex items-center justify-between">
         <div>
           <h2 class="text-2xl font-bold text-slate-800">使用者管理</h2>
           <p class="text-gray-600 mt-1">管理系統使用者帳號與角色權限</p>
@@ -10,9 +10,7 @@
           @click="showAddUserModal = true"
           class="btn-primary flex items-center space-x-2"
         >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-          </svg>
+          <Icon icon="heroicons:plus" class="w-5 h-5" />
           <span>新增使用者</span>
         </button>
       </div>
@@ -69,56 +67,57 @@
             @click="closeAddUserModal"
             class="text-gray-400 hover:text-gray-600 transition-colors"
           >
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            <Icon icon="heroicons:x-mark" class="w-6 h-6" />
           </button>
         </div>
         
         <!-- Modal Body -->
         <div class="p-6">
-          <form @submit.prevent="addUser" class="space-y-4">
-            <div>
-              <label class="form-label">帳號 *</label>
-              <input
-                v-model="userForm.username"
-                type="text"
-                class="form-input"
-                placeholder="請輸入帳號"
-                required
-              />
-            </div>
+          <form @submit.prevent="addUser" class="space-y-6">
+            <BaseFormInput
+              v-model="userForm.username"
+              label="帳號"
+              icon="heroicons:user"
+              placeholder="請輸入帳號"
+              help-text="帳號僅供登入使用，建議使用英文或數字"
+              :required="true"
+            />
             
-            <div>
-              <label class="form-label">姓名 *</label>
-              <input
-                v-model="userForm.name"
-                type="text"
-                class="form-input"
-                placeholder="請輸入姓名"
-                required
-              />
-            </div>
+            <BaseFormInput
+              v-model="userForm.name"
+              label="姓名"
+              icon="heroicons:identification"
+              placeholder="請輸入姓名"
+              help-text="請輸入使用者的真實姓名"
+              :required="true"
+            />
             
-            <div>
-              <label class="form-label">角色 *</label>
-              <select v-model="userForm.role" class="form-input" required>
-                <option value="">請選擇角色</option>
+            <BaseFormInput
+              v-model="userForm.role"
+              label="角色"
+              type="select"
+              placeholder="請選擇角色"
+              help-text="角色決定了使用者的權限範圍"
+              :required="true"
+            >
+              <template #options>
                 <option value="承辦人">承辦人</option>
                 <option value="稽核人員">稽核人員</option>
                 <option value="業者">業者</option>
-              </select>
-            </div>
+              </template>
+            </BaseFormInput>
             
-            <div class="flex space-x-3 pt-4">
+            <div class="flex space-x-3 pt-2">
               <button 
                 type="button" 
                 @click="closeAddUserModal"
-                class="btn-secondary flex-1"
+                class="btn-secondary flex-1 inline-flex items-center justify-center"
               >
+                <Icon icon="heroicons:x-mark" class="w-5 h-5 mr-1" />
                 取消
               </button>
-              <button type="submit" class="btn-primary flex-1">
+              <button type="submit" class="btn-primary flex-1 inline-flex items-center justify-center">
+                <Icon icon="heroicons:check" class="w-5 h-5 mr-1" />
                 新增
               </button>
             </div>
@@ -130,19 +129,34 @@
     <!-- 變更角色 Modal -->
     <div v-if="editingUser" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div class="bg-white rounded-lg p-6 w-full max-w-sm">
-        <h3 class="text-lg font-semibold mb-4">變更角色</h3>
-        <form @submit.prevent="updateUserRole">
-          <div class="mb-4">
-            <label class="form-label">使用者: {{ editingUser.name }}</label>
-            <select v-model="newRole" class="form-input" required>
+        <h3 class="text-lg font-semibold mb-6">變更角色</h3>
+        <form @submit.prevent="updateUserRole" class="space-y-6">
+          <BaseFormInput
+            v-model="newRole"
+            :label="`使用者: ${editingUser.name}`"
+            type="select"
+            :required="true"
+          >
+            <template #options>
               <option value="承辦人">承辦人</option>
               <option value="稽核人員">稽核人員</option>
               <option value="業者">業者</option>
-            </select>
-          </div>
+            </template>
+          </BaseFormInput>
+          
           <div class="flex space-x-3">
-            <button type="button" @click="editingUser = null" class="btn-secondary flex-1">取消</button>
-            <button type="submit" class="btn-primary flex-1">確定</button>
+            <button 
+              type="button" 
+              @click="editingUser = null" 
+              class="btn-secondary flex-1 inline-flex items-center justify-center"
+            >
+              <Icon icon="heroicons:x-mark" class="w-5 h-5 mr-1" />
+              取消
+            </button>
+            <button type="submit" class="btn-primary flex-1 inline-flex items-center justify-center">
+              <Icon icon="heroicons:check" class="w-5 h-5 mr-1" />
+              確定
+            </button>
           </div>
         </form>
       </div>
@@ -152,10 +166,12 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { Icon } from '@iconify/vue'
 import AppLayout from '../components/layout/AppLayout.vue'
 import BaseCard from '../components/common/BaseCard.vue'
 import BaseTable from '../components/common/BaseTable.vue'
 import BaseTag from '../components/common/BaseTag.vue'
+import BaseFormInput from '../components/common/BaseFormInput.vue'
 import { useAppStore } from '../stores/useAppStore.js'
 import { mockUsers } from '../mock/mockData.js'
 
@@ -179,7 +195,7 @@ const userColumns = [
   { key: 'createdAt', title: '建立日期' }
 ]
 
-function addUser() {
+const addUser = () => {
   const newUser = {
     username: userForm.value.username,
     name: userForm.value.name,
@@ -192,7 +208,7 @@ function addUser() {
   closeAddUserModal()
 }
 
-function closeAddUserModal() {
+const closeAddUserModal = () => {
   showAddUserModal.value = false
   // 重設表單
   userForm.value = {
@@ -202,21 +218,21 @@ function closeAddUserModal() {
   }
 }
 
-function toggleUserStatus(user) {
+const toggleUserStatus = (user) => {
   user.status = user.status === '啟用' ? '停用' : '啟用'
 }
 
-function changeUserRole(user) {
+const changeUserRole = (user) => {
   editingUser.value = user
   newRole.value = user.role
 }
 
-function updateUserRole() {
+const updateUserRole = () => {
   editingUser.value.role = newRole.value
   editingUser.value = null
 }
 
-function getRoleType(role) {
+const getRoleType = (role) => {
   const roleTypes = {
     '承辦人': 'info',
     '稽核人員': 'warning',

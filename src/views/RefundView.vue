@@ -8,51 +8,45 @@
 
       <!-- 單據查詢區塊 -->
       <BaseCard>
-        <div class="flex items-center justify-between cursor-pointer" @click="toggleSearchPanel">
+          <div class="flex items-center cursor-pointer" @click="toggleSearchPanel">
           <div class="flex items-center">
             <h3 class="text-lg font-medium text-gray-900 me-1">單據查詢</h3>
-            <svg class="w-5 h-5 text-blue-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
+            <Icon icon="heroicons:magnifying-glass" class="w-5 h-5 text-blue-500 mr-2" />
           </div>
-          <svg 
-            :class="['w-5 h-5 transition-transform', searchPanelOpen ? 'rotate-180' : '']"
-            fill="none" 
-            stroke="currentColor" 
-            viewBox="0 0 24 24"
-          >
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-          </svg>
+          <Icon 
+            icon="heroicons:chevron-down"
+            :class="['w-5 h-5 transition-transform ml-auto', searchPanelOpen ? 'rotate-180' : '']"
+          />
         </div>
         
         <div v-show="searchPanelOpen" class="mt-4">
           <!-- 搜尋條件 -->
-          <form @submit.prevent="queryDocument" class="space-y-4">
+          <form @submit.prevent="queryDocument" class="space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label class="form-label">單據編號</label>
-                <input
-                  v-model="queryForm.documentNumber"
-                  type="text"
-                  class="form-input"
-                  placeholder="請輸入單據編號"
-                />
-              </div>
-              <div>
-                <label class="form-label">申請人</label>
-                <input
-                  v-model="queryForm.applicantName"
-                  type="text"
-                  class="form-input"
-                  placeholder="請輸入申請人姓名"
-                />
-              </div>
+              <BaseFormInput
+                v-model="queryForm.documentNumber"
+                label="單據編號"
+                icon="heroicons:document-text"
+                placeholder="請輸入單據編號"
+              />
+              
+              <BaseFormInput
+                v-model="queryForm.applicantName"
+                label="申請人"
+                icon="heroicons:user"
+                placeholder="請輸入申請人姓名"
+              />
             </div>
             
             <!-- 按鈕區 -->
             <div class="flex justify-end space-x-2">
-              <button type="button" @click="resetSearch" class="btn-secondary">重設</button>
-              <button type="submit" :disabled="loading" class="btn-primary">
+              <button type="button" @click="resetSearch" class="btn-secondary inline-flex items-center">
+                <Icon icon="heroicons:arrow-path" class="w-5 h-5 mr-1" />
+                重設
+              </button>
+              <button type="submit" :disabled="loading" class="btn-primary inline-flex items-center">
+                <Icon v-if="loading" icon="heroicons:arrow-path" class="w-5 h-5 mr-1 animate-spin" />
+                <Icon v-else icon="heroicons:magnifying-glass" class="w-5 h-5 mr-1" />
                 {{ loading ? '查詢中...' : '查詢' }}
               </button>
             </div>
@@ -230,10 +224,12 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useToast } from 'vue-toastification'
+import { Icon } from '@iconify/vue'
 import AppLayout from '../components/layout/AppLayout.vue'
 import BaseCard from '../components/common/BaseCard.vue'
 import BaseTag from '../components/common/BaseTag.vue'
 import BaseConfirmDialog from '../components/common/BaseConfirmDialog.vue'
+import BaseFormInput from '../components/common/BaseFormInput.vue'
 import { useAppStore } from '../stores/useAppStore.js'
 import { processRefund as apiProcessRefund } from '../mock/mockApi.js'
 
@@ -244,7 +240,7 @@ const toast = useToast()
 const searchPanelOpen = ref(false)
 
 // 切換搜尋面板
-function toggleSearchPanel() {
+const toggleSearchPanel = () => {
   searchPanelOpen.value = !searchPanelOpen.value
 }
 
@@ -270,7 +266,7 @@ const refundableDocuments = computed(() => {
   return store.documents.filter(doc => doc.status === '已核銷')
 })
 
-function queryDocument() {
+const queryDocument = () => {
   loading.value = true
   hasSearched.value = true
   
@@ -298,7 +294,7 @@ function queryDocument() {
 }
 
 // 重設搜尋條件
-function resetSearch() {
+const resetSearch = () => {
   queryForm.value = {
     documentNumber: '',
     applicantName: ''
@@ -307,7 +303,7 @@ function resetSearch() {
   hasSearched.value = false
 }
 
-async function processRefund() {
+const processRefund = async () => {
   // 綜合檢查所有不可退費的狀態
   if (queriedDocument.value.status !== '已核銷') {
     let errorMsg = ''
@@ -359,25 +355,25 @@ async function processRefund() {
 }
 
 // 從清單選擇單據進行退費
-function selectDocumentForRefund(document) {
+const selectDocumentForRefund = (document) => {
   confirmDialog.value = {
     show: true,
     document: document
   }
 }
 
-function confirmRefund() {
+const confirmRefund = () => {
   if (!confirmDialog.value.document) return
   
   executeRefund(confirmDialog.value.document)
   confirmDialog.value = { show: false, document: null }
 }
 
-function cancelRefund() {
+const cancelRefund = () => {
   confirmDialog.value = { show: false, document: null }
 }
 
-async function executeRefund(document) {
+const executeRefund = async (document) => {
   selectedRefundDocument.value = document
   refunding.value = true
   
@@ -397,7 +393,7 @@ async function executeRefund(document) {
   }
 }
 
-function getStatusType(status) {
+const getStatusType = (status) => {
   const statusTypes = {
     '未核銷': 'warning',
     '已核銷': 'success',

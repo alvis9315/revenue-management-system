@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-gray-50 flex items-center justify-center">
-    <div class="max-w-md w-full space-y-8">
+    <div class="max-w-sm w-full space-y-8">
       <div class="text-center">
         <h1 class="text-3xl font-bold text-primary-950">歲入款項暨單據管理系統</h1>
         <p class="mt-2 text-sm text-gray-600">米樂睞資訊 MillerLight Info</p>
@@ -8,41 +8,36 @@
 
       <div class="card">
         <div class="card-body space-y-6 p-8">
-          <form @submit.prevent="handleLogin" class="space-y-4">
-            <div>
-              <label class="form-label">帳號</label>
-              <input
-                v-model="form.username"
-                type="text"
-                class="form-input"
-                placeholder="請輸入帳號"
-                required
-              />
-            </div>
+          <form @submit.prevent="handleLogin" class="space-y-6">
+            <BaseFormInput
+              v-model="form.username"
+              icon="heroicons:user"
+              placeholder="請輸入帳號"
+              :required="true"
+            />
 
-            <div>
-              <label class="form-label">密碼</label>
-              <input
-                v-model="form.password"
-                type="password"
-                class="form-input"
-                placeholder="請輸入密碼"
-                required
-              />
-            </div>
+            <BaseFormInput
+              v-model="form.password"
+              type="password"
+              icon="heroicons:lock-closed"
+              placeholder="請輸入密碼"
+              :required="true"
+            />
 
-            <div v-if="error" class="text-red-600 text-sm">
-              {{ error }}
+            <div v-if="error" class="form-error">
+              <Icon icon="heroicons:exclamation-circle" class="w-4 h-4" />
+              <span>{{ error }}</span>
             </div>
 
             <!-- 增加更多間距 -->
-            <div class="pt-4">
+            <div class="pt-2">
               <button
                 type="submit"
                 :disabled="loading"
-                class="w-full btn-primary"
+                class="w-full btn-primary flex items-center justify-center"
                 :class="{ 'opacity-50 cursor-not-allowed': loading }"
               >
+                <Icon v-if="loading" icon="heroicons:arrow-path" class="w-5 h-5 mr-2 animate-spin" />
                 {{ loading ? '登入中...' : '登入' }}
               </button>
             </div>
@@ -58,9 +53,7 @@
                 class="p-2 rounded-full hover:bg-gray-100 transition-colors"
                 title="查看測試帳號"
               >
-                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
+                <Icon icon="heroicons:information-circle" class="w-5 h-5 text-gray-400" />
               </button>
               
               <!-- 測試帳號彈窗 -->
@@ -71,16 +64,43 @@
                 <div class="text-xs">
                   <div class="font-medium text-gray-700 mb-3 text-center">測試帳號資訊</div>
                   <div class="space-y-2">
-                    <div class="flex justify-between items-center">
-                      <span class="font-medium">operator</span>
+                    <div class="flex justify-between items-center group">
+                      <div class="flex items-center flex-1">
+                        <span class="font-medium">operator</span>
+                        <button
+                          @click="copyToClipboard('operator')"
+                          class="ml-1 p-1 hover:bg-gray-100 rounded transition-colors"
+                          title="複製帳號"
+                        >
+                          <Icon icon="heroicons:clipboard-document" class="w-3 h-3 text-gray-500 hover:text-gray-700" />
+                        </button>
+                      </div>
                       <span class="text-gray-500">承辦人權限</span>
                     </div>
-                    <div class="flex justify-between items-center">
-                      <span class="font-medium">auditor</span>
+                    <div class="flex justify-between items-center group">
+                      <div class="flex items-center flex-1">
+                        <span class="font-medium">auditor</span>
+                        <button
+                          @click="copyToClipboard('auditor')"
+                          class="ml-1 p-1 hover:bg-gray-100 rounded transition-colors"
+                          title="複製帳號"
+                        >
+                          <Icon icon="heroicons:clipboard-document" class="w-3 h-3 text-gray-500 hover:text-gray-700" />
+                        </button>
+                      </div>
                       <span class="text-gray-500">稽核人員權限</span>
                     </div>
-                    <div class="flex justify-between items-center">
-                      <span class="font-medium">vendor</span>
+                    <div class="flex justify-between items-center group">
+                      <div class="flex items-center flex-1">
+                        <span class="font-medium">vendor</span>
+                        <button
+                          @click="copyToClipboard('vendor')"
+                          class="ml-1 p-1 hover:bg-gray-100 rounded transition-colors"
+                          title="複製帳號"
+                        >
+                          <Icon icon="heroicons:clipboard-document" class="w-3 h-3 text-gray-500 hover:text-gray-700" />
+                        </button>
+                      </div>
                       <span class="text-gray-500">業者權限</span>
                     </div>
                   </div>
@@ -94,9 +114,7 @@
                   @click="showTestAccounts = false"
                   class="absolute top-1 right-1 p-1 rounded hover:bg-gray-100"
                 >
-                  <svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                  </svg>
+                  <Icon icon="heroicons:x-mark" class="w-3 h-3 text-gray-400" />
                 </button>
               </div>
             </div>
@@ -119,7 +137,9 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { Icon } from '@iconify/vue'
 import { useAppStore } from '../stores/useAppStore.js'
+import BaseFormInput from '../components/common/BaseFormInput.vue'
 
 const router = useRouter()
 const store = useAppStore()
@@ -133,7 +153,7 @@ const loading = ref(false)
 const error = ref('')
 const showTestAccounts = ref(false)
 
-async function handleLogin() {
+const handleLogin = async () => {
   if (!form.value.username || !form.value.password) {
     error.value = '請填寫帳號和密碼'
     return
@@ -158,12 +178,32 @@ async function handleLogin() {
 }
 
 // 轉到忘記密碼頁面
-function goToForgotPassword() {
+const goToForgotPassword = () => {
   router.push('/forgot-password')
 }
 
+// 複製到剪貼簿
+const copyToClipboard = (text) => {
+  navigator.clipboard.writeText(text).then(() => {
+    // 可以添加一個簡單的視覺反饋
+    const button = event.target.closest('button')
+    const icon = button.querySelector('svg')
+    if (icon) {
+      // 暫時改變圖標顏色表示複製成功
+      icon.classList.add('text-green-500')
+      icon.classList.remove('text-gray-500')
+      setTimeout(() => {
+        icon.classList.remove('text-green-500')
+        icon.classList.add('text-gray-500')
+      }, 1000)
+    }
+  }).catch(err => {
+    console.error('複製失敗:', err)
+  })
+}
+
 // 點擊外部關閉彈窗
-function handleClickOutside() {
+const handleClickOutside = () => {
   if (showTestAccounts.value) {
     showTestAccounts.value = false
   }

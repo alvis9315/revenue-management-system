@@ -1,6 +1,6 @@
 <template>
   <div class="overflow-x-auto">
-    <table class="min-w-full bg-white">
+    <table class="min-w-full bg-white table-fixed">
       <thead>
         <tr class="bg-gray-50 border-b border-gray-200">
           <th
@@ -10,7 +10,7 @@
           >
             {{ column.title }}
           </th>
-          <th v-if="showActions" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          <th v-if="showActions" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1 whitespace-nowrap">
             操作
           </th>
         </tr>
@@ -20,13 +20,14 @@
           <td
             v-for="column in columns"
             :key="column.key"
-            class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+            class="px-6 py-4 text-sm text-gray-900"
+            :class="column.nowrap !== false ? 'whitespace-nowrap' : ''"
           >
             <slot :name="column.key" :row="row" :value="row[column.key]">
               {{ row[column.key] }}
             </slot>
           </td>
-          <td v-if="showActions" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+          <td v-if="showActions" class="px-6 py-4 text-sm text-gray-500 w-1 whitespace-nowrap">
             <slot name="actions" :row="row" :index="index"></slot>
           </td>
         </tr>

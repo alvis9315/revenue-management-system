@@ -7,48 +7,48 @@
       </div>
 
       <div class="card">
-        <div class="card-body space-y-6">
-          <form @submit.prevent="handleResetPassword" class="space-y-4">
-            <div>
-              <label class="form-label">新密碼</label>
-              <input
-                v-model="form.newPassword"
-                type="password"
-                class="form-input"
-                placeholder="請輸入新密碼"
-                required
-                minlength="3"
-              />
+        <div class="card-body space-y-6 p-8">
+          <form @submit.prevent="handleResetPassword" class="space-y-6">
+            <BaseFormInput
+              v-model="form.newPassword"
+              label="新密碼"
+              type="password"
+              icon="heroicons:lock-closed"
+              placeholder="請輸入新密碼"
+              help-text="至少 8 個字符，需包含大寫字母、小寫字母及數字"
+              :required="true"
+            />
+
+            <BaseFormInput
+              v-model="form.confirmPassword"
+              label="確認新密碼"
+              type="password"
+              icon="heroicons:lock-closed"
+              placeholder="請再次輸入新密碼"
+              help-text="請確保兩次輸入的密碼一致"
+              :required="true"
+            />
+
+            <div v-if="error" class="form-error">
+              <Icon icon="heroicons:exclamation-circle" class="w-4 h-4" />
+              <span>{{ error }}</span>
             </div>
 
-            <div>
-              <label class="form-label">確認新密碼</label>
-              <input
-                v-model="form.confirmPassword"
-                type="password"
-                class="form-input"
-                placeholder="請再次輸入新密碼"
-                required
-                minlength="3"
-              />
-            </div>
-
-            <div v-if="error" class="text-red-600 text-sm">
-              {{ error }}
-            </div>
-
-            <div v-if="successMessage" class="text-green-600 text-sm">
-              {{ successMessage }}
+            <div v-if="successMessage" class="form-success">
+              <Icon icon="heroicons:check-circle" class="w-4 h-4" />
+              <span>{{ successMessage }}</span>
             </div>
 
             <!-- 增加更多間距 -->
-            <div class="pt-4">
+            <div class="pt-2">
               <button
                 type="submit"
                 :disabled="loading"
-                class="w-full btn-primary"
+                class="w-full btn-primary flex items-center justify-center"
                 :class="{ 'opacity-50 cursor-not-allowed': loading }"
               >
+                <Icon v-if="loading" icon="heroicons:arrow-path" class="w-5 h-5 mr-2 animate-spin" />
+                <Icon v-else icon="heroicons:check" class="w-5 h-5 mr-2" />
                 {{ loading ? '更新中...' : '更新密碼' }}
               </button>
             </div>
@@ -59,8 +59,9 @@
             <button 
               @click="goToLogin"
               type="button"
-              class="text-sm text-primary-600 hover:text-primary-800 transition-colors"
+              class="text-sm text-primary-600 hover:text-primary-800 transition-colors inline-flex items-center"
             >
+              <Icon icon="heroicons:arrow-left" class="w-4 h-4 mr-1" />
               返回登入頁面
             </button>
           </div>
@@ -73,6 +74,8 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { Icon } from '@iconify/vue'
+import BaseFormInput from '../components/common/BaseFormInput.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -109,14 +112,36 @@ onMounted(() => {
   }
 })
 
-async function handleResetPassword() {
+const handleResetPassword = async () => {
   if (!form.value.newPassword || !form.value.confirmPassword) {
     error.value = '請填寫所有欄位'
     return
   }
 
-  if (form.value.newPassword.length < 3) {
-    error.value = '密碼長度至少需要3個字符'
+  // 驗證密碼長度
+  if (form.value.newPassword.length < 8) {
+    error.value = '密碼長度至少需要 8 個字符'
+    return
+  }
+
+  // 驗證密碼複雜度
+  const password = form.value.newPassword
+  const hasUpperCase = /[A-Z]/.test(password)
+  const hasLowerCase = /[a-z]/.test(password)
+  const hasNumber = /[0-9]/.test(password)
+  
+  if (!hasUpperCase) {
+    error.value = '密碼必須包含至少一個大寫字母'
+    return
+  }
+  
+  if (!hasLowerCase) {
+    error.value = '密碼必須包含至少一個小寫字母'
+    return
+  }
+  
+  if (!hasNumber) {
+    error.value = '密碼必須包含至少一個數字'
     return
   }
 
@@ -147,7 +172,7 @@ async function handleResetPassword() {
 }
 
 // 返回登入頁面
-function goToLogin() {
+const goToLogin = () => {
   router.push('/login')
 }
 </script>

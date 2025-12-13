@@ -4,7 +4,7 @@ import { mockBankRecords, mockDocuments } from './mockData.js'
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 
 // 模擬匯入核銷檔案
-export async function importReconciliationFile(file = null) {
+export const importReconciliationFile = async (file = null) => {
   await delay(1000) // 模擬處理時間
   
   const results = {
@@ -91,7 +91,7 @@ export async function importReconciliationFile(file = null) {
 }
 
 // 讀取檔案內容
-function readFileContent(file) {
+const readFileContent = (file) => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
     reader.onload = (e) => resolve(e.target.result)
@@ -101,7 +101,7 @@ function readFileContent(file) {
 }
 
 // 解析 CSV 內容
-function parseCSV(csvContent) {
+const parseCSV = (csvContent) => {
   const lines = csvContent.split('\n')
   const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim())
   const data = []
@@ -124,7 +124,7 @@ function parseCSV(csvContent) {
 }
 
 // 模擬執行批次作業
-export async function runBatchJob() {
+export const runBatchJob = async () => {
   await delay(2000) // 模擬處理時間
   
   const now = new Date()
@@ -162,7 +162,7 @@ export async function runBatchJob() {
 }
 
 // 模擬查詢單據
-export async function queryDocument(documentNumber) {
+export const queryDocument = async (documentNumber) => {
   await delay(500)
   
   const document = mockDocuments.find(doc => doc.number === documentNumber)
@@ -174,7 +174,7 @@ export async function queryDocument(documentNumber) {
 }
 
 // 模擬退費作業
-export async function processRefund(documentNumber) {
+export const processRefund = async (documentNumber) => {
   await delay(800)
   
   const document = mockDocuments.find(doc => doc.number === documentNumber)
@@ -195,7 +195,7 @@ export async function processRefund(documentNumber) {
 }
 
 // 模擬登入驗證
-export async function authenticate(username, password, role) {
+export const authenticate = async (username, password, role) => {
   await delay(800)
   
   // 簡單驗證邏輯

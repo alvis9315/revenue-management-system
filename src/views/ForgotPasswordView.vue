@@ -7,35 +7,31 @@
       </div>
 
       <div class="card">
-        <div class="card-body space-y-6">
-          <form @submit.prevent="handleForgotPassword" class="space-y-4">
-            <div>
-              <label class="form-label">信箱</label>
-              <input
-                v-model="form.email"
-                type="email"
-                class="form-input"
-                placeholder="請輸入您的信箱"
-                required
-              />
-            </div>
-
-            <div v-if="error" class="text-red-600 text-sm">
-              {{ error }}
-            </div>
-
-            <div v-if="successMessage" class="text-green-600 text-sm">
-              {{ successMessage }}
-            </div>
+        <div class="card-body space-y-6 p-8">
+          <form @submit.prevent="handleForgotPassword" class="space-y-6">
+            <BaseFormInput
+              v-model="form.email"
+              label="信箱"
+              type="email"
+              icon="heroicons:envelope"
+              placeholder="請輸入您的信箱"
+              help-text="我們會將重設密碼連結發送到此信箱"
+              :required="true"
+              :error="error"
+              :success="!!successMessage"
+              :success-message="successMessage"
+            />
 
             <!-- 增加更多間距 -->
-            <div class="pt-4">
+            <div class="pt-2">
               <button
                 type="submit"
                 :disabled="loading"
-                class="w-full btn-primary"
+                class="w-full btn-primary flex items-center justify-center"
                 :class="{ 'opacity-50 cursor-not-allowed': loading }"
               >
+                <Icon v-if="loading" icon="heroicons:arrow-path" class="w-5 h-5 mr-2 animate-spin" />
+                <Icon v-else icon="heroicons:paper-airplane" class="w-5 h-5 mr-2" />
                 {{ loading ? '處理中...' : '發送重設連結' }}
               </button>
             </div>
@@ -46,8 +42,9 @@
             <button 
               @click="goToLogin"
               type="button"
-              class="text-sm text-primary-600 hover:text-primary-800 transition-colors"
+              class="text-sm text-primary-600 hover:text-primary-800 transition-colors inline-flex items-center"
             >
+              <Icon icon="heroicons:arrow-left" class="w-4 h-4 mr-1" />
               返回登入頁面
             </button>
           </div>
@@ -60,6 +57,8 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { Icon } from '@iconify/vue'
+import BaseFormInput from '../components/common/BaseFormInput.vue'
 
 const router = useRouter()
 
@@ -71,7 +70,7 @@ const loading = ref(false)
 const error = ref('')
 const successMessage = ref('')
 
-async function handleForgotPassword() {
+const handleForgotPassword = async () => {
   if (!form.value.email) {
     error.value = '請輸入信箱'
     return
@@ -104,12 +103,12 @@ async function handleForgotPassword() {
 }
 
 // 生成模擬token
-function generateMockToken(email) {
+const generateMockToken = (email) => {
   return btoa(`${email}-${Date.now()}`)
 }
 
 // 返回登入頁面
-function goToLogin() {
+const goToLogin = () => {
   router.push('/login')
 }
 </script>

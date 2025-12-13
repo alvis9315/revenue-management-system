@@ -6,13 +6,13 @@ import LoginView from '../views/LoginView.vue'
 import ForgotPasswordView from '../views/ForgotPasswordView.vue'
 import ResetPasswordView from '../views/ResetPasswordView.vue'
 import DashboardView from '../views/DashboardView.vue'
-import DocumentCreateView from '../views/DocumentCreateView.vue'
 import DocumentListView from '../views/DocumentListView.vue'
 import ReconciliationImportView from '../views/ReconciliationImportView.vue'
 import ExceptionListView from '../views/ExceptionListView.vue'
 import RefundView from '../views/RefundView.vue'
 import BatchStatusView from '../views/BatchStatusView.vue'
 import UserManagementView from '../views/UserManagementView.vue'
+import ProfileSettingsView from '../views/ProfileSettingsView.vue'
 
 const routes = [
   {
@@ -46,8 +46,7 @@ const routes = [
   {
     path: '/documents/create',
     name: 'DocumentCreate',
-    component: DocumentCreateView,
-    meta: { requiresAuth: true, title: '單據開立' }
+    redirect: '/documents/list' // 重定向到單據管理
   },
   {
     path: '/documents/list',
@@ -84,6 +83,12 @@ const routes = [
     name: 'UserManagement',
     component: UserManagementView,
     meta: { requiresAuth: true, title: '使用者管理' }
+  },
+  {
+    path: '/profile/settings',
+    name: 'ProfileSettings',
+    component: ProfileSettingsView,
+    meta: { requiresAuth: true, title: '個人設定' }
   }
 ]
 

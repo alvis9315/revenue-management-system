@@ -7,24 +7,43 @@
           v-for="tab in tabs"
           :key="tab.key"
           @click="activeTab = tab.key"
-          class="px-6 py-3 text-sm font-medium transition-colors duration-200 border-r border-gray-300 last:border-r-0"
+          class="flex-1 px-2 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-medium transition-colors duration-200 border-r border-gray-300 last:border-r-0"
           :class="[
             activeTab === tab.key
               ? 'bg-white text-gray-900 font-semibold'
               : 'bg-gray-200 text-gray-700 hover:bg-gray-150 hover:text-gray-800'
           ]"
         >
-          <div class="flex items-center">
-            <!-- Iconify 圖標 -->
+          <!-- 小螢幕：垂直佈局 -->
+          <div class="flex flex-col items-center sm:hidden">
+            <!-- 圖標和文字 -->
+            <div class="flex items-center justify-center mb-1">
+              <Icon v-if="tab.iconifyIcon" :icon="tab.iconifyIcon" class="w-4 h-4 mr-1" />
+              <component v-else-if="tab.icon" :is="tab.icon" class="w-4 h-4 mr-1" />
+              <svg v-else-if="tab.iconPath" class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="tab.iconPath" />
+              </svg>
+              <span class="text-xs">{{ tab.title }}</span>
+            </div>
+            <!-- 數量標籤 -->
+            <span v-if="tab.count !== undefined" class="px-2 py-0.5 text-xs font-bold rounded"
+              :class="[
+                activeTab === tab.key
+                  ? 'bg-blue-100 text-blue-700'
+                  : 'bg-gray-200 text-gray-600'
+              ]"
+            >
+              {{ tab.count }}
+            </span>
+          </div>
+          
+          <!-- 桌面版：水平佈局 -->
+          <div class="hidden sm:flex items-center justify-center">
             <Icon v-if="tab.iconifyIcon" :icon="tab.iconifyIcon" class="w-4 h-4 mr-2" />
-            <!-- Vue 組件圖標 -->
             <component v-else-if="tab.icon" :is="tab.icon" class="w-4 h-4 mr-2" />
-            <!-- SVG 路徑圖標 (已棄用，推薦使用 Iconify) -->
             <svg v-else-if="tab.iconPath" class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="tab.iconPath" />
             </svg>
-            
-            <!-- 標題和數量 -->
             <span>{{ tab.title }}</span>
             <span v-if="tab.count !== undefined" class="ml-2 px-2 py-1 text-xs font-bold rounded"
               :class="[
@@ -41,7 +60,7 @@
     </div>
     
     <!-- Tab 內容 -->
-    <div class="tab-content bg-white p-6">
+    <div class="tab-content bg-white p-3 sm:p-6">
       <slot :name="'tab-' + activeTab" :activeTab="activeTab" />
     </div>
   </div>

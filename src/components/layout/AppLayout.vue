@@ -1,25 +1,28 @@
 <template>
-  <div class="min-h-screen bg-gray-50 flex flex-col">
+  <div class="h-screen bg-gray-50 flex flex-col">
     <!-- 頂部標題列 -->
-    <header class="bg-primary-1000 text-white shadow-lg sticky top-0 z-40">
-      <div class="px-6 py-4">
+    <header class="bg-primary-1000 text-white shadow-lg sticky top-0 z-40 flex-shrink-0">
+      <div class="px-3 sm:px-6 py-3 sm:py-4">
         <div class="flex items-center justify-between">
-          <div>
-            <h1 class="text-xl font-bold">歲入款項暨單據管理系統</h1>
-            <p class="text-sm text-primary-200">米樂睞資訊 MillerLight Info</p>
+          <!-- 左側：標題 -->
+          <div class="flex-1 min-w-0">
+            <h1 class="text-sm sm:text-xl font-bold truncate">歲入款項暨單據管理系統</h1>
+            <p class="text-xs sm:text-sm text-primary-200 hidden sm:block">米樂睞資訊 MillerLight Info</p>
           </div>
-          <div class="flex items-center space-x-4">
-            <span class="text-xl font-bold">歡迎，{{ store.currentUser?.username || '用戶' }}</span>
+          
+          <!-- 右側：用戶資訊 -->
+          <div class="flex items-center space-x-2 sm:space-x-4 flex-shrink-0">
+            <span class="text-sm sm:text-xl font-bold hidden sm:inline">歡迎，{{ store.currentUser?.username || '用戶' }}</span>
             
             <!-- 頭像下拉選單 -->
             <div class="relative" @click.stop>
               <button 
                 @click="toggleUserMenu" 
-                class="flex items-center space-x-2 p-2 rounded-lg hover:bg-primary-1000 transition-colors"
+                class="flex items-center space-x-1 sm:space-x-2 p-1.5 sm:p-2 rounded-lg hover:bg-primary-1000 transition-colors"
                 :class="{ 'bg-primary-900': isUserMenuOpen }"
               >
                 <!-- 頭像 -->
-                <div class="w-8 h-8 bg-primary-200 rounded-full flex items-center justify-center text-primary-800 font-semibold text-sm">
+                <div class="w-7 h-7 sm:w-8 sm:h-8 bg-primary-200 rounded-full flex items-center justify-center text-primary-800 font-semibold text-xs sm:text-sm">
                   {{ getUserInitial() }}
                 </div>
               </button>
@@ -31,8 +34,8 @@
               >
                 <!-- 用戶資訊區塊 -->
                 <div class="px-4 py-3 border-b border-gray-100">
-                  <div class="text-lg font-medium text-gray-900">{{ store.currentUser?.username || '用戶' }}</div>
-                  <div class="text-lg text-gray-500">{{ store.currentUser?.role || '業者' }}</div>
+                  <div class="text-lg font-bold text-gray-900">{{ store.currentUser?.username || '用戶' }}</div>
+                  <div class="text-sm text-gray-500">{{ store.currentUser?.role || '業者' }}</div>
                 </div>
                 
                 <!-- 選單項目 -->
@@ -59,14 +62,14 @@
     </header>
 
     <!-- 主要內容區域 -->
-    <div class="flex flex-1 relative">
-      <!-- 左側選單 -->
-      <nav :class="['bg-white shadow-lg fixed left-0 top-0 bottom-0 z-30 overflow-hidden transition-all duration-300 ease-in-out', 
-                    isMenuCollapsed ? 'w-20' : 'w-64']" 
-           :style="{ top: headerHeight + 'px' }">
-        <div class="p-4">
-          <!-- 折疊按鈕 -->
-          <div :class="['mb-4', isMenuCollapsed ? 'flex justify-center' : 'flex justify-end']">
+    <div class="flex flex-1 overflow-hidden">
+      <!-- 左側選單 - 小螢幕固定收合，大螢幕可展開/收合 -->
+      <nav :class="['bg-white shadow-lg flex-shrink-0 z-30 overflow-y-auto transition-all duration-300 ease-in-out', 
+                    'w-16 sm:w-20',
+                    !isMobile && !isMenuCollapsed ? 'sm:w-64' : '']">
+        <div class="p-2 sm:p-4">
+          <!-- 折疊按鈕 - 小螢幕隱藏 -->
+          <div :class="['mb-4 hidden sm:flex', isMenuCollapsed ? 'justify-center' : 'justify-end']">
             <button 
               @click.stop="toggleMenu"
               class="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-110 hover:rotate-3 active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50"
@@ -89,37 +92,17 @@
                 @click.stop
                 to="/dashboard"
                 :class="[
-                  'flex items-center py-3 text-slate-700 font-semibold text-base rounded-lg hover:bg-primary-50 hover:text-primary-800 transition-colors relative group pl-3 pr-2',
+                  'flex items-center py-2 sm:py-3 text-slate-700 font-semibold text-sm sm:text-base rounded-lg hover:bg-primary-50 hover:text-primary-800 transition-colors relative group pl-2 sm:pl-3 pr-2',
                   
                   $route.path === '/dashboard' ? 'bg-primary-50 text-primary-800 border-l-4 border-primary-500' : ''
                 ]"
-                :title="isMenuCollapsed ? '儀表板' : ''"
+                :title="isMenuCollapsed || isMobile ? '儀表板' : ''"
               >
-                <span class="material-icons-round flex-shrink-0 transition-all duration-300 ease-in-out transform hover:scale-110 hover:rotate-12 group-hover:text-primary-600" :class="isMenuCollapsed ? 'mr-0' : 'mr-3'">📊</span>
-                <span class="transition-all duration-300 ease-in-out whitespace-nowrap overflow-hidden" :class="isMenuCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'">儀表板</span>
+                <span class="material-icons-round flex-shrink-0 transition-all duration-300 ease-in-out transform hover:scale-110 hover:rotate-12 group-hover:text-primary-600 text-lg sm:text-xl" :class="isMenuCollapsed || isMobile ? 'mr-0' : 'sm:mr-3'">📊</span>
+                <span class="transition-all duration-300 ease-in-out whitespace-nowrap overflow-hidden hidden sm:inline" :class="isMenuCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'">儀表板</span>
                 <!-- 折疊時的懸浮提示 -->
-                <div :class="isMenuCollapsed ? 'opacity-0 group-hover:opacity-100' : 'opacity-0'" @click.stop class="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-sm rounded transition-all duration-300 ease-in-out pointer-events-none whitespace-nowrap z-50">
+                <div :class="isMenuCollapsed || isMobile ? 'opacity-0 group-hover:opacity-100' : 'opacity-0'" @click.stop class="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-xs sm:text-sm rounded transition-all duration-300 ease-in-out pointer-events-none whitespace-nowrap z-50">
                   儀表板
-                </div>
-              </router-link>
-            </li>
-            
-            <!-- 單據開立 - 僅承辦人 -->
-            <li v-if="currentPermissions.documentCreate">
-              <router-link
-                @click.stop
-                to="/documents/create"
-                :class="[
-                  'flex items-center py-3 text-slate-700 font-semibold text-base rounded-lg hover:bg-primary-50 hover:text-primary-800 transition-colors relative group pl-3 pr-2',
-                  $route.path === '/documents/create' ? 'bg-primary-50 text-primary-800 border-l-4 border-primary-500' : ''
-                ]"
-                :title="isMenuCollapsed ? '單據開立' : ''"
-              >
-                <span class="material-icons-round flex-shrink-0 transition-all duration-300 ease-in-out transform hover:scale-110 hover:-rotate-12 group-hover:text-primary-600" :class="isMenuCollapsed ? 'mr-0' : 'mr-3'">📝</span>
-                <span class="transition-all duration-300 ease-in-out whitespace-nowrap overflow-hidden" :class="isMenuCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'">單據開立</span>
-                <!-- 折疊時的懸浮提示 -->
-                <div :class="isMenuCollapsed ? 'opacity-0 group-hover:opacity-100' : 'opacity-0'" @click.stop class="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-sm rounded transition-all duration-300 ease-in-out pointer-events-none whitespace-nowrap z-50">
-                  單據開立
                 </div>
               </router-link>
             </li>
@@ -130,15 +113,15 @@
                 @click.stop
                 to="/documents/list"
                 :class="[
-                  'flex items-center py-3 text-slate-700 font-semibold text-base rounded-lg hover:bg-primary-50 hover:text-primary-800 transition-colors relative group pl-3 pr-2',
+                  'flex items-center py-2 sm:py-3 text-slate-700 font-semibold text-sm sm:text-base rounded-lg hover:bg-primary-50 hover:text-primary-800 transition-colors relative group pl-2 sm:pl-3 pr-2',
                   $route.path === '/documents/list' ? 'bg-primary-50 text-primary-800 border-l-4 border-primary-500' : ''
                 ]"
-                :title="isMenuCollapsed ? '單據管理' : ''"
+                :title="isMenuCollapsed || isMobile ? '單據管理' : ''"
               >
-                <span class="material-icons-round flex-shrink-0 transition-all duration-300 ease-in-out transform hover:scale-110 hover:rotate-6 group-hover:text-primary-600" :class="isMenuCollapsed ? 'mr-0' : 'mr-3'">📋</span>
-                <span class="transition-all duration-300 ease-in-out whitespace-nowrap overflow-hidden" :class="isMenuCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'">單據管理</span>
+                <span class="material-icons-round flex-shrink-0 transition-all duration-300 ease-in-out transform hover:scale-110 hover:rotate-6 group-hover:text-primary-600 text-lg sm:text-xl" :class="isMenuCollapsed || isMobile ? 'mr-0' : 'sm:mr-3'">📋</span>
+                <span class="transition-all duration-300 ease-in-out whitespace-nowrap overflow-hidden hidden sm:inline" :class="isMenuCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'">單據管理</span>
                 <!-- 折疊時的懸浮提示 -->
-                <div :class="isMenuCollapsed ? 'opacity-0 group-hover:opacity-100' : 'opacity-0'" @click.stop class="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-sm rounded transition-all duration-300 ease-in-out pointer-events-none whitespace-nowrap z-50">
+                <div :class="isMenuCollapsed || isMobile ? 'opacity-0 group-hover:opacity-100' : 'opacity-0'" @click.stop class="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-xs sm:text-sm rounded transition-all duration-300 ease-in-out pointer-events-none whitespace-nowrap z-50">
                   單據管理
                 </div>
               </router-link>
@@ -150,15 +133,15 @@
                 @click.stop
                 to="/reconciliation/import"
                 :class="[
-                  'flex items-center py-3 text-slate-700 font-semibold text-base rounded-lg hover:bg-primary-50 hover:text-primary-800 transition-colors relative group pl-3 pr-2',
+                  'flex items-center py-2 sm:py-3 text-slate-700 font-semibold text-sm sm:text-base rounded-lg hover:bg-primary-50 hover:text-primary-800 transition-colors relative group pl-2 sm:pl-3 pr-2',
                   $route.path === '/reconciliation/import' ? 'bg-primary-50 text-primary-800 border-l-4 border-primary-500' : ''
                 ]"
-                :title="isMenuCollapsed ? '核銷匯入' : ''"
+                :title="isMenuCollapsed || isMobile ? '核銷匯入' : ''"
               >
-                <span class="material-icons-round flex-shrink-0 transition-all duration-300 ease-in-out transform hover:scale-110 hover:-rotate-6 group-hover:text-primary-600" :class="isMenuCollapsed ? 'mr-0' : 'mr-3'">📥</span>
-                <span class="transition-all duration-300 ease-in-out whitespace-nowrap overflow-hidden" :class="isMenuCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'">核銷匯入</span>
+                <span class="material-icons-round flex-shrink-0 transition-all duration-300 ease-in-out transform hover:scale-110 hover:-rotate-6 group-hover:text-primary-600 text-lg sm:text-xl" :class="isMenuCollapsed || isMobile ? 'mr-0' : 'sm:mr-3'">📥</span>
+                <span class="transition-all duration-300 ease-in-out whitespace-nowrap overflow-hidden hidden sm:inline" :class="isMenuCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'">核銷匯入</span>
                 <!-- 折疊時的懸浮提示 -->
-                <div :class="isMenuCollapsed ? 'opacity-0 group-hover:opacity-100' : 'opacity-0'" @click.stop class="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-sm rounded transition-all duration-300 ease-in-out pointer-events-none whitespace-nowrap z-50">
+                <div :class="isMenuCollapsed || isMobile ? 'opacity-0 group-hover:opacity-100' : 'opacity-0'" @click.stop class="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-xs sm:text-sm rounded transition-all duration-300 ease-in-out pointer-events-none whitespace-nowrap z-50">
                   核銷匯入
                 </div>
               </router-link>
@@ -170,20 +153,20 @@
                 @click.stop
                 to="/exceptions"
                 :class="[
-                  'flex items-center py-3 text-slate-700 font-semibold text-base rounded-lg hover:bg-primary-50 hover:text-primary-800 transition-colors relative group pl-3 pr-2',
+                  'flex items-center py-2 sm:py-3 text-slate-700 font-semibold text-sm sm:text-base rounded-lg hover:bg-primary-50 hover:text-primary-800 transition-colors relative group pl-2 sm:pl-3 pr-2',
                   $route.path === '/exceptions' ? 'bg-primary-50 text-primary-800 border-l-4 border-primary-500' : ''
                 ]"
-                :title="isMenuCollapsed ? '異常清單' : ''"
+                :title="isMenuCollapsed || isMobile ? '異常清單' : ''"
               >
-                <span class="material-icons-round flex-shrink-0 transition-all duration-300 ease-in-out transform hover:scale-110 hover:rotate-12 group-hover:text-red-600" :class="isMenuCollapsed ? 'mr-0' : 'mr-3'">⚠️</span>
-                <div class="flex items-center transition-all duration-300 ease-in-out whitespace-nowrap overflow-hidden" :class="isMenuCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'">
+                <span class="material-icons-round flex-shrink-0 transition-all duration-300 ease-in-out transform hover:scale-110 hover:rotate-12 group-hover:text-red-600 text-lg sm:text-xl" :class="isMenuCollapsed || isMobile ? 'mr-0' : 'sm:mr-3'">⚠️</span>
+                <div class="flex items-center transition-all duration-300 ease-in-out whitespace-nowrap overflow-hidden hidden sm:flex" :class="isMenuCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'">
                   <span>異常清單</span>
                   <span v-if="store.documentStats.exceptions > 0" class="ml-2 bg-red-500 text-white text-xs rounded-full px-2 py-1">
                     {{ store.documentStats.exceptions }}
                   </span>
                 </div>
                 <!-- 折疊時的懸浮提示 -->
-                <div :class="isMenuCollapsed ? 'opacity-0 group-hover:opacity-100' : 'opacity-0'" @click.stop class="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-sm rounded transition-all duration-300 ease-in-out pointer-events-none whitespace-nowrap z-50">
+                <div :class="isMenuCollapsed || isMobile ? 'opacity-0 group-hover:opacity-100' : 'opacity-0'" @click.stop class="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-xs sm:text-sm rounded transition-all duration-300 ease-in-out pointer-events-none whitespace-nowrap z-50">
                   異常清單 {{ store.documentStats.exceptions > 0 ? `(${store.documentStats.exceptions})` : '' }}
                 </div>
               </router-link>
@@ -195,15 +178,15 @@
                 @click.stop
                 to="/refund"
                 :class="[
-                  'flex items-center py-3 text-slate-700 font-semibold text-base rounded-lg hover:bg-primary-50 hover:text-primary-800 transition-colors relative group pl-3 pr-2',
+                  'flex items-center py-2 sm:py-3 text-slate-700 font-semibold text-sm sm:text-base rounded-lg hover:bg-primary-50 hover:text-primary-800 transition-colors relative group pl-2 sm:pl-3 pr-2',
                   $route.path === '/refund' ? 'bg-primary-50 text-primary-800 border-l-4 border-primary-500' : ''
                 ]"
-                :title="isMenuCollapsed ? '退費作業' : ''"
+                :title="isMenuCollapsed || isMobile ? '退費作業' : ''"
               >
-                <span class="material-icons-round flex-shrink-0 transition-all duration-300 ease-in-out transform hover:scale-110 hover:-rotate-12 group-hover:text-green-600" :class="isMenuCollapsed ? 'mr-0' : 'mr-3'">💰</span>
-                <span class="transition-all duration-300 ease-in-out whitespace-nowrap overflow-hidden" :class="isMenuCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'">退費作業</span>
+                <span class="material-icons-round flex-shrink-0 transition-all duration-300 ease-in-out transform hover:scale-110 hover:-rotate-12 group-hover:text-green-600 text-lg sm:text-xl" :class="isMenuCollapsed || isMobile ? 'mr-0' : 'sm:mr-3'">💰</span>
+                <span class="transition-all duration-300 ease-in-out whitespace-nowrap overflow-hidden hidden sm:inline" :class="isMenuCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'">退費作業</span>
                 <!-- 折疊時的懸浮提示 -->
-                <div :class="isMenuCollapsed ? 'opacity-0 group-hover:opacity-100' : 'opacity-0'" @click.stop class="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-sm rounded transition-all duration-300 ease-in-out pointer-events-none whitespace-nowrap z-50">
+                <div :class="isMenuCollapsed || isMobile ? 'opacity-0 group-hover:opacity-100' : 'opacity-0'" @click.stop class="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-xs sm:text-sm rounded transition-all duration-300 ease-in-out pointer-events-none whitespace-nowrap z-50">
                   退費作業
                 </div>
               </router-link>
@@ -215,15 +198,15 @@
                 @click.stop
                 to="/batch-status"
                 :class="[
-                  'flex items-center py-3 text-slate-700 font-semibold text-base rounded-lg hover:bg-primary-50 hover:text-primary-800 transition-colors relative group pl-3 pr-2',
+                  'flex items-center py-2 sm:py-3 text-slate-700 font-semibold text-sm sm:text-base rounded-lg hover:bg-primary-50 hover:text-primary-800 transition-colors relative group pl-2 sm:pl-3 pr-2',
                   $route.path === '/batch-status' ? 'bg-primary-50 text-primary-800 border-l-4 border-primary-500' : ''
                 ]"
-                :title="isMenuCollapsed ? '批次作業狀態' : ''"
+                :title="isMenuCollapsed || isMobile ? '批次作業狀態' : ''"
               >
-                <span class="material-icons-round flex-shrink-0 transition-all duration-300 ease-in-out transform hover:scale-110 hover:rotate-180 group-hover:text-blue-600" :class="isMenuCollapsed ? 'mr-0' : 'mr-3'">⚙️</span>
-                <span class="transition-all duration-300 ease-in-out whitespace-nowrap overflow-hidden" :class="isMenuCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'">批次作業狀態</span>
+                <span class="material-icons-round flex-shrink-0 transition-all duration-300 ease-in-out transform hover:scale-110 hover:rotate-180 group-hover:text-blue-600 text-lg sm:text-xl" :class="isMenuCollapsed || isMobile ? 'mr-0' : 'sm:mr-3'">⚙️</span>
+                <span class="transition-all duration-300 ease-in-out whitespace-nowrap overflow-hidden hidden sm:inline" :class="isMenuCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'">批次作業狀態</span>
                 <!-- 折疊時的懸浮提示 -->
-                <div :class="isMenuCollapsed ? 'opacity-0 group-hover:opacity-100' : 'opacity-0'" @click.stop class="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-sm rounded transition-all duration-300 ease-in-out pointer-events-none whitespace-nowrap z-50">
+                <div :class="isMenuCollapsed || isMobile ? 'opacity-0 group-hover:opacity-100' : 'opacity-0'" @click.stop class="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-xs sm:text-sm rounded transition-all duration-300 ease-in-out pointer-events-none whitespace-nowrap z-50">
                   批次作業狀態
                 </div>
               </router-link>
@@ -235,15 +218,15 @@
                 @click.stop
                 to="/users"
                 :class="[
-                  'flex items-center py-3 text-slate-700 font-semibold text-base rounded-lg hover:bg-primary-50 hover:text-primary-800 transition-colors relative group pl-3 pr-2',
+                  'flex items-center py-2 sm:py-3 text-slate-700 font-semibold text-sm sm:text-base rounded-lg hover:bg-primary-50 hover:text-primary-800 transition-colors relative group pl-2 sm:pl-3 pr-2',
                   $route.path === '/users' ? 'bg-primary-50 text-primary-800 border-l-4 border-primary-500' : ''
                 ]"
-                :title="isMenuCollapsed ? '使用者管理' : ''"
+                :title="isMenuCollapsed || isMobile ? '使用者管理' : ''"
               >
-                <span class="material-icons-round flex-shrink-0 transition-all duration-300 ease-in-out transform hover:scale-110 hover:rotate-6 group-hover:text-purple-600" :class="isMenuCollapsed ? 'mr-0' : 'mr-3'">👥</span>
-                <span class="transition-all duration-300 ease-in-out whitespace-nowrap overflow-hidden" :class="isMenuCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'">使用者管理</span>
+                <span class="material-icons-round flex-shrink-0 transition-all duration-300 ease-in-out transform hover:scale-110 hover:rotate-6 group-hover:text-purple-600 text-lg sm:text-xl" :class="isMenuCollapsed || isMobile ? 'mr-0' : 'sm:mr-3'">👥</span>
+                <span class="transition-all duration-300 ease-in-out whitespace-nowrap overflow-hidden hidden sm:inline" :class="isMenuCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'">使用者管理</span>
                 <!-- 折疊時的懸浮提示 -->
-                <div :class="isMenuCollapsed ? 'opacity-0 group-hover:opacity-100' : 'opacity-0'" @click.stop class="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-sm rounded transition-all duration-300 ease-in-out pointer-events-none whitespace-nowrap z-50">
+                <div :class="isMenuCollapsed || isMobile ? 'opacity-0 group-hover:opacity-100' : 'opacity-0'" @click.stop class="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-xs sm:text-sm rounded transition-all duration-300 ease-in-out pointer-events-none whitespace-nowrap z-50">
                   使用者管理
                 </div>
               </router-link>
@@ -260,9 +243,8 @@
 
       <!-- 主要內容區 -->
       <main class="flex-1 overflow-y-auto bg-gray-50" 
-            :class="enableTransition ? 'transition-all duration-300 ease-in-out' : ''"
-            :style="{ marginLeft: isMenuCollapsed ? '5rem' : '16rem' }">
-        <div class="p-4 md:p-6 lg:p-8">
+            :class="enableTransition ? 'transition-all duration-300 ease-in-out' : ''">
+        <div class="p-3 sm:p-4 md:p-6 lg:p-8">
           <div class="mx-auto">
             <slot></slot>
           </div>
@@ -290,12 +272,25 @@ const headerHeight = ref(80)
 
 // 用戶選單狀態
 const isUserMenuOpen = ref(false)
-// 側邊選單摺疊狀態 - 立即從 localStorage 讀取
-const isMenuCollapsed = ref(localStorage.getItem('menuCollapsed') === 'true')
+
+// 檢測螢幕尺寸
+const isMobile = ref(window.innerWidth < 640)
+
+// 側邊選單摺疊狀態 - 小螢幕預設收合
+const getInitialCollapsedState = () => {
+  // 小螢幕：預設收合
+  if (window.innerWidth < 640) {
+    return true
+  }
+  // 大螢幕：讀取 localStorage
+  return localStorage.getItem('menuCollapsed') === 'true'
+}
+
+const isMenuCollapsed = ref(getInitialCollapsedState())
 // 控制 transition 動畫
 const enableTransition = ref(false)
 // 控制圖標是否完全置中（動畫完成後）
-const isFullyCollapsed = ref(localStorage.getItem('menuCollapsed') === 'true')
+const isFullyCollapsed = ref(getInitialCollapsedState())
 // Toast 參考
 const toast = ref(null)
 
@@ -303,7 +298,7 @@ const toast = ref(null)
 const rolePermissions = {
   '承辦人': {
     dashboard: true,
-    documentCreate: true,
+    documentCreate: false, // 不再需要單獨的開立頁面
     documentList: true,
     reconciliationImport: true,
     exceptions: true,
@@ -340,18 +335,18 @@ const currentPermissions = computed(() => {
 })
 
 // 獲取用戶姓名首字母
-function getUserInitial() {
+const getUserInitial = () => {
   const username = store.currentUser?.username || '用戶'
   return username.charAt(0).toUpperCase()
 }
 
 // 切換用戶選單
-function toggleUserMenu() {
+const toggleUserMenu = () => {
   isUserMenuOpen.value = !isUserMenuOpen.value
 }
 
 // 切換側邊選單摺疊
-function toggleMenu() {
+const toggleMenu = () => {
   isMenuCollapsed.value = !isMenuCollapsed.value
   
   // 如果是展開，立即移除置中
@@ -372,35 +367,50 @@ function toggleMenu() {
 }
 
 // 打開個人設定
-function openUserSettings() {
+const openUserSettings = () => {
   isUserMenuOpen.value = false
-  // TODO: 實現個人設定頁面
-  toast.value?.showInfo('個人設定', '個人設定功能開發中，請稍後再試...')
+  router.push('/profile/settings')
 }
 
 // 登出功能
-function handleLogout() {
+const handleLogout = () => {
   isUserMenuOpen.value = false
   store.logout()
   router.push('/login')
 }
 
 // 點擊外部關閉選單
-function handleClickOutside(event) {
+const handleClickOutside = (event) => {
   if (isUserMenuOpen.value) {
     isUserMenuOpen.value = false
+  }
+}
+
+// 處理視窗大小變化
+const handleResize = () => {
+  isMobile.value = window.innerWidth < 640
+  
+  // 小螢幕：自動收合選單
+  if (isMobile.value && !isMenuCollapsed.value) {
+    isMenuCollapsed.value = true
+    isFullyCollapsed.value = true
   }
 }
 
 // 監聽點擊事件
 onMounted(async () => {
   document.addEventListener('click', handleClickOutside)
+  window.addEventListener('resize', handleResize)
   
   // 延遲啟用 transition，避免初始渲染時的動畫閃爍
   await nextTick()
   setTimeout(() => {
     enableTransition.value = true
   }, 1000)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize)
 })
 
 // 監聽路由變化，確保狀態正確

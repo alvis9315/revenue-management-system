@@ -3,7 +3,7 @@
     <!-- 表格頭部 -->
     <div class="bg-gray-50 border-b border-gray-200">
       <div class="grid px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider" :style="gridStyle">
-        <div v-for="column in columns" :key="column.key" class="flex items-center">
+        <div v-for="column in columns" :key="column.key" class="flex items-center" :class="column.width === 'auto' ? 'whitespace-nowrap' : ''">
           {{ column.title }}
           <svg v-if="column.sortable" class="w-3 h-3 ml-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
@@ -30,7 +30,7 @@
               minHeight: itemHeight + 'px'
             }"
           >
-            <div v-for="column in columns" :key="column.key" class="px-6 py-3 text-sm flex items-start">
+            <div v-for="column in columns" :key="column.key" class="px-6 py-3 text-sm flex items-start" :class="column.width === 'auto' ? 'whitespace-nowrap' : ''">
               <slot 
                 :name="'cell-' + column.key" 
                 :item="item" 
@@ -52,7 +52,7 @@
           class="grid border-b border-gray-100 hover:bg-gray-50 transition-colors"
           :style="{ ...gridStyle, minHeight: itemHeight + 'px' }"
         >
-          <div v-for="column in columns" :key="column.key" class="px-6 py-3 text-sm flex items-start">
+          <div v-for="column in columns" :key="column.key" class="px-6 py-3 text-sm flex items-start" :class="column.width === 'auto' ? 'whitespace-nowrap' : ''">
             <slot 
               :name="'cell-' + column.key" 
               :item="item" 
@@ -122,7 +122,18 @@ const containerHeight = ref(400)
 
 // 計算網格樣式
 const gridStyle = computed(() => {
-  const templateColumns = props.columns.map(col => col.width || '1fr').join(' ')
+  const templateColumns = props.columns.map(col => {
+    // 如果 width 為 'auto'，使用 min-content 讓欄位自適應內容寬度
+    if (col.width === 'auto') {
+      return 'min-content'
+    }
+    // 如果有指定固定寬度，使用該寬度
+    if (col.width) {
+      return col.width
+    }
+    // 否則使用 1fr 平均分配
+    return '1fr'
+  }).join(' ')
   return { gridTemplateColumns: templateColumns }
 })
 

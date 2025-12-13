@@ -32,7 +32,7 @@ export const useAppStore = defineStore('app', () => {
   })
   
   // Actions
-  function login(username, password) {
+  const login = (username, password) => {
     // 帳號對應的角色
     const accountRoles = {
       'operator': '承辦人',
@@ -43,19 +43,42 @@ export const useAppStore = defineStore('app', () => {
     // 驗證帳號密碼
     if (password === '123' && accountRoles[username]) {
       const role = accountRoles[username]
-      currentUser.value = { username, role }
+      currentUser.value = { 
+        username, 
+        role,
+        name: username,
+        department: '財務處',
+        email: '',
+        phone: '',
+        password: password
+      }
       userRole.value = role
       return true
     }
     return false
   }
   
-  function logout() {
+  const logout = () => {
     currentUser.value = null
     userRole.value = ''
   }
   
-  function addDocument(document) {
+  const updateUserProfile = (profileData) => {
+    if (currentUser.value) {
+      currentUser.value = {
+        ...currentUser.value,
+        ...profileData
+      }
+    }
+  }
+  
+  const updateUserPassword = (newPassword) => {
+    if (currentUser.value) {
+      currentUser.value.password = newPassword
+    }
+  }
+  
+  const addDocument = (document) => {
     const newDoc = {
       ...document,
       id: `DOC${String(documents.value.length + 1).padStart(4, '0')}`,
@@ -66,14 +89,31 @@ export const useAppStore = defineStore('app', () => {
     return newDoc
   }
   
-  function updateDocumentStatus(id, status) {
+  const updateDocumentStatus = (id, status) => {
     const doc = documents.value.find(d => d.id === id)
     if (doc) {
       doc.status = status
     }
   }
   
-  function addBatchRecord(record) {
+  const updateDocument = (documentNumber, updatedData) => {
+    const index = documents.value.findIndex(d => d.number === documentNumber)
+    if (index !== -1) {
+      // 保留原有的 id, status, createdAt，只更新可編輯的欄位
+      documents.value[index] = {
+        ...documents.value[index],
+        ...updatedData,
+        // 確保這些欄位不被覆蓋
+        id: documents.value[index].id,
+        status: documents.value[index].status,
+        createdAt: documents.value[index].createdAt
+      }
+      return documents.value[index]
+    }
+    return null
+  }
+  
+  const addBatchRecord = (record) => {
     const newRecord = {
       ...record,
       id: `BATCH${String(batchRecords.value.length + 1).padStart(3, '0')}`,
@@ -83,15 +123,15 @@ export const useAppStore = defineStore('app', () => {
     return newRecord
   }
   
-  function addExceptionRecord(record) {
+  const addExceptionRecord = (record) => {
     exceptionRecords.value.push(record)
   }
   
-  function removeExceptionRecord(index) {
+  const removeExceptionRecord = (index) => {
     exceptionRecords.value.splice(index, 1)
   }
   
-  function addUser(user) {
+  const addUser = (user) => {
     const newUser = {
       ...user,
       id: `USER${String(users.value.length + 1).padStart(3, '0')}`,
@@ -116,8 +156,11 @@ export const useAppStore = defineStore('app', () => {
     // Actions
     login,
     logout,
+    updateUserProfile,
+    updateUserPassword,
     addDocument,
     updateDocumentStatus,
+    updateDocument,
     addBatchRecord,
     addExceptionRecord,
     removeExceptionRecord,
