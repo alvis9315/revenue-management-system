@@ -59,49 +59,49 @@
               <!-- 測試帳號彈窗 -->
               <div 
                 v-if="showTestAccounts"
-                class="absolute top-full mt-2 left-1/2 transform -translate-x-1/2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg p-4 z-10"
+                class="absolute top-0 left-full ml-2 w-64 sm:w-72 bg-white border border-gray-200 rounded-lg shadow-lg p-4 z-10"
               >
-                <div class="text-xs">
+                <div class="text-xs sm:text-sm">
                   <div class="font-medium text-gray-700 mb-3 text-center">測試帳號資訊</div>
                   <div class="space-y-2">
                     <div class="flex justify-between items-center group">
-                      <div class="flex items-center flex-1">
-                        <span class="font-medium">operator</span>
+                      <div class="flex items-center flex-1 min-w-0">
+                        <span class="font-medium truncate">operator</span>
                         <button
                           @click="copyToClipboard('operator')"
-                          class="ml-1 p-1 hover:bg-gray-100 rounded transition-colors"
+                          class="ml-1 p-1 hover:bg-gray-100 rounded transition-colors flex-shrink-0"
                           title="複製帳號"
                         >
                           <Icon icon="heroicons:clipboard-document" class="w-3 h-3 text-gray-500 hover:text-gray-700" />
                         </button>
                       </div>
-                      <span class="text-gray-500">承辦人權限</span>
+                      <span class="text-gray-500 ml-2 flex-shrink-0 text-xs">承辦人權限</span>
                     </div>
                     <div class="flex justify-between items-center group">
-                      <div class="flex items-center flex-1">
-                        <span class="font-medium">auditor</span>
+                      <div class="flex items-center flex-1 min-w-0">
+                        <span class="font-medium truncate">auditor</span>
                         <button
                           @click="copyToClipboard('auditor')"
-                          class="ml-1 p-1 hover:bg-gray-100 rounded transition-colors"
+                          class="ml-1 p-1 hover:bg-gray-100 rounded transition-colors flex-shrink-0"
                           title="複製帳號"
                         >
                           <Icon icon="heroicons:clipboard-document" class="w-3 h-3 text-gray-500 hover:text-gray-700" />
                         </button>
                       </div>
-                      <span class="text-gray-500">稽核人員權限</span>
+                      <span class="text-gray-500 ml-2 flex-shrink-0 text-xs">稽核人員權限</span>
                     </div>
                     <div class="flex justify-between items-center group">
-                      <div class="flex items-center flex-1">
-                        <span class="font-medium">vendor</span>
+                      <div class="flex items-center flex-1 min-w-0">
+                        <span class="font-medium truncate">vendor</span>
                         <button
                           @click="copyToClipboard('vendor')"
-                          class="ml-1 p-1 hover:bg-gray-100 rounded transition-colors"
+                          class="ml-1 p-1 hover:bg-gray-100 rounded transition-colors flex-shrink-0"
                           title="複製帳號"
                         >
                           <Icon icon="heroicons:clipboard-document" class="w-3 h-3 text-gray-500 hover:text-gray-700" />
                         </button>
                       </div>
-                      <span class="text-gray-500">業者權限</span>
+                      <span class="text-gray-500 ml-2 flex-shrink-0 text-xs">業者權限</span>
                     </div>
                   </div>
                   <div class="mt-3 pt-2 border-t border-gray-100 text-center">
