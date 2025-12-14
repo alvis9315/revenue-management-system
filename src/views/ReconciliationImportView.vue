@@ -57,7 +57,7 @@
                 @change="handleFileSelect"
               />
               <div class="flex items-center justify-center w-full h-28 sm:h-32 border-2 border-dashed border-gray-300 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-colors cursor-pointer">
-                <div class="text-center px-4">
+                <div class="text-center p-4 ">
                   <Icon icon="heroicons:document-text" class="w-10 h-10 sm:w-12 sm:h-12 mx-auto text-gray-400 mb-2 sm:mb-4" />
                   <p class="text-sm sm:text-base text-gray-600 mb-1 sm:mb-2">
                     <span class="font-medium text-primary-500 hover:text-primary-800">點擊選擇檔案</span>
@@ -144,7 +144,7 @@
                   <div class="flex items-center space-x-2">
                     <button 
                       @click="viewSuccessDetail(item)"
-                      class="inline-flex flex-row items-center justify-center px-3 py-1.5 bg-blue-100 text-blue-700 hover:bg-blue-200 hover:text-blue-800 text-sm font-medium rounded-md transition-colors"
+                      class="inline-flex flex-row items-center justify-center px-3 py-1.5 bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-gray-800 text-sm font-medium rounded-md transition-colors"
                     >
                       <Icon icon="heroicons:eye" class="w-4 h-4 mr-1 flex-shrink-0" />
                       <span>檢視</span>
@@ -172,7 +172,7 @@
                     </div>
                     <button 
                       @click="viewSuccessDetail(item)"
-                      class="inline-flex items-center px-3 py-1.5 bg-blue-100 text-blue-700 hover:bg-blue-200 text-xs font-medium rounded-md"
+                      class="inline-flex items-center px-3 py-1.5 bg-gray-100 text-gray-700 hover:bg-gray-200 text-xs font-medium rounded-md"
                     >
                       <Icon icon="heroicons:eye" class="w-3 h-3 mr-1" />
                       檢視
@@ -202,7 +202,7 @@
                 :items="importResult.amountMismatch"
                 height="500px"
                 :virtual-threshold="50"
-                :item-height="80"
+                :item-height="60"
                 :get-item-key="(item) => item.importId"
                 empty-text="暫無金額不符紀錄"
               >
@@ -545,7 +545,7 @@ const successColumns = [
   { key: 'documentNumber', title: '單據編號' },
   { key: 'bankAmount', title: '金額' },
   { key: 'depositDate', title: '繳費日期' },
-  { key: 'actions', title: '操作', width: 'auto' }
+  { key: 'actions', title: '操作', width: '120px' }
 ]
 
 const mismatchColumns = [
@@ -554,14 +554,14 @@ const mismatchColumns = [
   { key: 'systemAmount', title: '系統金額' },
   { key: 'difference', title: '差額' },
   { key: 'reason', title: '原因' },
-  { key: 'actions', title: '操作', width: 'auto' }
+  { key: 'actions', title: '操作', width: '200px' }
 ]
 
 const notFoundColumns = [
   { key: 'documentNumber', title: '單據編號' },
   { key: 'bankAmount', title: '金額' },
   { key: 'reason', title: '原因' },
-  { key: 'actions', title: '操作', width: 'auto' }
+  { key: 'actions', title: '操作', width: '200px' }
 ]
 
 const handleFileSelect = (event) => {

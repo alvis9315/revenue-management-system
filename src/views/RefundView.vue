@@ -77,7 +77,7 @@
                   <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     開立日期
                   </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1 whitespace-nowrap">
                     操作
                   </th>
                 </tr>
@@ -102,7 +102,7 @@
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {{ doc.createdAt }}
                   </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-1">
                     <button
                       v-if="doc.status === '已核銷'"
                       @click="selectDocumentForRefund(doc)"
@@ -167,7 +167,7 @@
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   開立日期
                 </th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1 whitespace-nowrap">
                   操作
                 </th>
               </tr>
@@ -189,7 +189,7 @@
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {{ doc.createdAt }}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-1">
                   <button
                     @click="selectDocumentForRefund(doc)"
                     :disabled="refunding && selectedRefundDocument?.id === doc.id"

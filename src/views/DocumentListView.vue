@@ -47,14 +47,12 @@
             <BaseFormInput
               v-model="searchForm.number"
               label="單據編號"
-              icon="heroicons:document-text"
               placeholder="請輸入單據編號"
             />
             
             <BaseFormInput
               v-model="searchForm.applicantName"
               label="申請人"
-              icon="heroicons:user"
               placeholder="請輸入申請人姓名"
             />
             
@@ -89,44 +87,20 @@
           </div>
           
           <!-- 第二排 - 日期和狀態 -->
-          <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            <!-- 建立日期範圍 -->
-            <div class="lg:col-span-2">
-              <label class="form-label">建立日期範圍</label>
-              <!-- 桌面版：橫向排列 -->
-              <div class="hidden sm:flex items-center space-x-2">
-                <input
-                  v-model="searchForm.dateStart"
-                  type="date"
-                  class="form-input flex-1"
-                />
-                <span class="text-gray-500">~</span>
-                <input
-                  v-model="searchForm.dateEnd"
-                  type="date"
-                  class="form-input flex-1"
-                />
-              </div>
-              <!-- 手機版：直向排列 -->
-              <div class="sm:hidden space-y-2">
-                <div>
-                  <label class="text-xs text-gray-600 mb-1 block">起始日期</label>
-                  <input
-                    v-model="searchForm.dateStart"
-                    type="date"
-                    class="form-input w-full"
-                  />
-                </div>
-                <div>
-                  <label class="text-xs text-gray-600 mb-1 block">結束日期</label>
-                  <input
-                    v-model="searchForm.dateEnd"
-                    type="date"
-                    class="form-input w-full"
-                  />
-                </div>
-              </div>
-            </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- 建立日期範圍 - 起始日期 -->
+            <BaseFormInput
+              v-model="searchForm.dateStart"
+              label="起始日期"
+              type="date"
+            />
+            
+            <!-- 建立日期範圍 - 結束日期 -->
+            <BaseFormInput
+              v-model="searchForm.dateEnd"
+              label="結束日期"
+              type="date"
+            />
             
             <!-- 狀態 -->
             <BaseFormInput

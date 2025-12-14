@@ -8,6 +8,10 @@ import router from './router'
 import Toast from "vue-toastification"
 import "vue-toastification/dist/index.css"
 
+// Vue Virtual Scroller
+import VueVirtualScroller from 'vue-virtual-scroller'
+import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
+
 // Iconify Vue 組件
 import { Icon } from '@iconify/vue'
 
@@ -18,6 +22,7 @@ app.component('Icon', Icon)
 
 app.use(createPinia())
 app.use(router)
+app.use(VueVirtualScroller)
 
 // 配置 Toast
 app.use(Toast, {

@@ -59,7 +59,7 @@
               <!-- 測試帳號彈窗 -->
               <div 
                 v-if="showTestAccounts"
-                class="absolute top-0 left-full ml-2 w-64 sm:w-72 bg-white border border-gray-200 rounded-lg shadow-lg p-4 z-10"
+                class="absolute top-full mt-2 left-1/2 -translate-x-1/2 w-64 sm:w-72 max-w-[calc(100vw-2rem)] bg-white border border-gray-200 rounded-lg shadow-lg p-4 z-10"
               >
                 <div class="text-xs sm:text-sm">
                   <div class="font-medium text-gray-700 mb-3 text-center">測試帳號資訊</div>

@@ -6,7 +6,14 @@
         <p class="text-sm sm:text-base text-gray-600 mt-1">處理匯入後的異常案例</p>
       </div>
 
-      <BaseCard title="異常記錄">
+      <BaseCard>
+        <div class="flex items-center mb-4">
+          <h3 class="text-lg font-medium text-gray-900">異常記錄</h3>
+          <span v-if="store.exceptionRecords.length > 0" class="text-red-500 py-1 px-3 text-sm font-medium">
+            {{ store.exceptionRecords.length }} 筆
+          </span>
+        </div>
+        
         <div v-if="store.exceptionRecords.length > 0">
           <!-- 桌面版：表格 -->
           <div class="hidden sm:block">
@@ -99,6 +106,7 @@
             </div>
           </div>
         </div>
+        
         <div v-else class="text-center py-12 text-gray-500">
           目前沒有異常記錄
         </div>

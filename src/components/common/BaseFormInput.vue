@@ -11,7 +11,7 @@
     
     <!-- 帶圖標的輸入框 -->
     <div v-if="icon" class="input-icon-wrapper">
-      <Icon :icon="icon" class="input-icon w-5 h-5" />
+      <Icon :icon="icon" class="input-icon w-5 h-5 mt-1" />
       
       <!-- Textarea -->
       <textarea
@@ -45,6 +45,7 @@
       <!-- Input -->
       <input
         v-else
+        class="mt-2"
         :id="inputId"
         :value="modelValue"
         @input="handleInput"
