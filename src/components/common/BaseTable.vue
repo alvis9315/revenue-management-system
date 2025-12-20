@@ -10,7 +10,7 @@
           >
             {{ column.title }}
           </th>
-          <th v-if="showActions" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1 whitespace-nowrap">
+          <th v-if="showActions" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-auto min-w-[200px] whitespace-nowrap">
             操作
           </th>
         </tr>
@@ -27,7 +27,7 @@
               {{ row[column.key] }}
             </slot>
           </td>
-          <td v-if="showActions" class="px-6 py-4 text-sm text-gray-500 w-1 whitespace-nowrap">
+          <td v-if="showActions" class="px-6 py-4 text-sm text-gray-500 w-auto min-w-[200px] whitespace-nowrap">
             <slot name="actions" :row="row" :index="index"></slot>
           </td>
         </tr>

@@ -337,7 +337,7 @@ const currentPermissions = computed(() => {
     exceptions: store.currentUser?.permissions.includes('ALL') || store.currentUser?.permissions.includes('VIEW_AUDIT'),
     refund: store.currentUser?.permissions.includes('ALL') || store.currentUser?.permissions.includes('VIEW_DOCS'),
     batchStatus: store.currentUser?.permissions.includes('ALL') || store.currentUser?.permissions.includes('VIEW_BATCH'),
-    userManagement: store.currentUser?.permissions.includes('ALL')
+    userManagement: store.currentUser?.permissions.includes('ALL') || store.currentUser?.permissions.includes('USER_MANAGEMENT')
   }
   return permissions
 })

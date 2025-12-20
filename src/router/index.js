@@ -41,7 +41,7 @@ const routes = [
     path: '/dashboard',
     name: 'Dashboard',
     component: DashboardView,
-    meta: { requiresAuth: true, title: '儀表板', permissions: ['ALL'] }
+    meta: { requiresAuth: true, title: '儀表板' }
   },
   {
     path: '/documents/create',
@@ -82,7 +82,7 @@ const routes = [
     path: '/users',
     name: 'UserManagement',
     component: UserManagementView,
-    meta: { requiresAuth: true, title: '使用者管理', permissions: ['ALL'] }
+    meta: { requiresAuth: true, title: '使用者管理', permissions: ['ALL', 'USER_MANAGEMENT'] }
   },
   {
     path: '/profile/settings',
@@ -101,16 +101,31 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const store = useAppStore()
 
+  // 如果未登入且需要認證，重定向到登入頁
   if (to.meta.requiresAuth && !store.isLoggedIn) {
     next('/login')
-  } else if (to.path === '/login' && store.isLoggedIn) {
-    next('/dashboard')
-  } else if (to.meta.permissions && !store.currentUser.permissions.includes('ALL') && !to.meta.permissions.some(p => store.currentUser.permissions.includes(p))) {
-    // 檢查權限
-    next('/dashboard') // 無權限時重定向到儀表板
-  } else {
-    next()
+    return
   }
+
+  // 如果已登入但訪問登入頁，重定向到儀表板
+  if (to.path === '/login' && store.isLoggedIn) {
+    next('/dashboard')
+    return
+  }
+
+  // 檢查權限（需要認證且設定了權限要求）
+  if (to.meta.requiresAuth && to.meta.permissions && store.currentUser) {
+    const hasPermission = store.currentUser.permissions.includes('ALL') || 
+                         to.meta.permissions.some(p => store.currentUser.permissions.includes(p))
+    
+    if (!hasPermission) {
+      // 如果沒有權限，重定向到儀表板（儀表板對所有已登入用戶開放）
+      next('/dashboard')
+      return
+    }
+  }
+
+  next()
 })
 
 export default router

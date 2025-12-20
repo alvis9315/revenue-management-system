@@ -38,7 +38,8 @@ export const useAppStore = defineStore('app', () => {
         'operator': '承辦人',
         'auditor': '稽核人員', 
         'vendor': '業者',
-        'admin': '系統管理員'
+        'admin': '超級管理員',
+        'admin2': '管理員'
       }
     
     // 驗證帳號密碼
@@ -55,9 +56,12 @@ export const useAppStore = defineStore('app', () => {
       }
       userRole.value = role
 
-      // 系統管理員可存取所有功能
-      if (role === '系統管理員') {
+      // 超級管理員可存取所有功能
+      if (role === '超級管理員') {
         currentUser.value.permissions = ['ALL']
+      } else if (role === '管理員') {
+        // 管理員可以查看和管理使用者，但不能刪除
+        currentUser.value.permissions = ['VIEW_DOCS', 'EDIT_DOCS', 'VIEW_BATCH', 'VIEW_AUDIT', 'VIEW_PROFILE', 'USER_MANAGEMENT']
       } else if (role === '承辦人') {
         currentUser.value.permissions = ['VIEW_DOCS', 'EDIT_DOCS', 'VIEW_BATCH', 'VIEW_PROFILE']
       } else if (role === '稽核人員') {
@@ -154,6 +158,15 @@ export const useAppStore = defineStore('app', () => {
     return newUser
   }
   
+  const removeUser = (userId) => {
+    const index = users.value.findIndex(u => u.id === userId)
+    if (index !== -1) {
+      users.value.splice(index, 1)
+      return true
+    }
+    return false
+  }
+  
   return {
     // State
     currentUser,
@@ -176,6 +189,7 @@ export const useAppStore = defineStore('app', () => {
     addBatchRecord,
     addExceptionRecord,
     removeExceptionRecord,
-    addUser
+    addUser,
+    removeUser
   }
 })

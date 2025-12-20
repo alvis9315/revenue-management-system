@@ -39,24 +39,35 @@
 
           <template #actions="{ row, index }">
             <div
-              class="flex space-x-2 sm:flex-col sm:space-x-0 sm:space-y-2 md:flex-row md:space-y-0"
+              class="flex gap-2 sm:flex-col sm:gap-0 sm:space-y-2 md:flex-row md:space-y-0"
               v-if="row.role !== '超級管理員'"
             >
+              <!-- 管理員和超級管理員都可以啟用/停用 -->
               <button
                 @click="toggleUserStatus(row)"
                 :class="{
-                  'px-3 py-1.5 text-m rounded-lg bg-red-100 text-red-700 hover:bg-red-200': row.status === '停用',
-                  'px-3 py-1.5 text-m rounded-lg bg-green-100 text-green-700 hover:bg-green-200': row.status === '啟用'
+                  'px-3 py-1.5 text-m rounded-lg bg-red-100 text-red-700 hover:bg-red-200': row.status === '啟用',
+                  'px-3 py-1.5 text-m rounded-lg bg-green-100 text-green-700 hover:bg-green-200': row.status !== '啟用'
                 }"
-                class="transition-colors me-2"
+                class="transition-colors"
               >
-                {{ row.status === '啟用' ? '啟用' : '停用' }}
+                {{ row.status === '啟用' ? '停用' : '啟用' }}
               </button>
+              <!-- 只有超級管理員才能看到變更按鈕 -->
               <button
+                v-if="isSuperAdmin"
                 @click="changeUserRole(row)"
-                class="px-3 py-1.5 text-m rounded-lg bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors"
+                class="ml-2 px-3 py-1.5 text-m rounded-lg bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors"
               >
                 變更
+              </button>
+              <!-- 只有超級管理員才能看到刪除按鈕 -->
+              <button
+                v-if="isSuperAdmin"
+                @click="showDeleteDialog(row)"
+                class="ml-2 px-3 py-1.5 text-m rounded-lg bg-red-100 text-red-700 hover:bg-red-200 transition-colors"
+              >
+                刪除
               </button>
             </div>
           </template>
@@ -82,7 +93,6 @@
             :required="true"
             :error="userFormErrors.username"
           />
-          <p v-if="userFormErrors.username" class="text-red-500 text-sm">{{ userFormErrors.username }}</p>
           
           <BaseFormInput
             v-model="userForm.name"
@@ -94,7 +104,6 @@
             :max-length="20"
             :error="userFormErrors.name"
           />
-          <p v-if="userFormErrors.name" class="text-red-500 text-sm">{{ userFormErrors.name }}</p>
           
           <BaseFormInput
             v-model="userForm.role"
@@ -111,7 +120,6 @@
               <option value="業者">業者</option>
             </template>
           </BaseFormInput>
-          <p v-if="userFormErrors.role" class="text-red-500 text-sm">{{ userFormErrors.role }}</p>
         </form>
       </template>
       <template #footer>
@@ -124,7 +132,7 @@
             <Icon icon="heroicons:x-mark" class="w-5 h-5 mr-1" />
             取消
           </button>
-          <button type="submit" class="btn-primary flex-1 inline-flex items-center justify-center">
+          <button type="button" @click="addUser" class="btn-primary flex-1 inline-flex items-center justify-center">
             <Icon icon="heroicons:check" class="w-5 h-5 mr-1" />
             新增
           </button>
@@ -168,12 +176,26 @@
       </div>
     </div>
 
+    <!-- 刪除確認對話框 -->
+    <BaseConfirmDialog
+      :show="deleteDialog.show"
+      title="確認刪除使用者"
+      :message="`確定要刪除使用者「${deleteDialog.user?.name}」嗎？此操作無法撤銷。`"
+      confirm-text="確認刪除"
+      cancel-text="取消"
+      type="danger"
+      confirm-button-variant="danger"
+      @confirm="confirmDeleteUser"
+      @cancel="cancelDeleteUser"
+      @close="cancelDeleteUser"
+    />
+
     <BaseToast ref="toastRef" />
   </AppLayout>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { Icon } from '@iconify/vue'
 import AppLayout from '../components/layout/AppLayout.vue'
 import BaseCard from '../components/common/BaseCard.vue'
@@ -182,6 +204,7 @@ import BaseTag from '../components/common/BaseTag.vue'
 import BaseFormInput from '../components/common/BaseFormInput.vue'
 import BaseModal from '../components/common/BaseModal.vue';
 import BaseToast from '../components/common/BaseToast.vue';
+import BaseConfirmDialog from '../components/common/BaseConfirmDialog.vue';
 import { useAppStore } from '../stores/useAppStore.js'
 import { mockUsers } from '../mock/mockData.js'
 
@@ -205,6 +228,17 @@ const newRole = ref('')
 
 const toastRef = ref(null);
 
+// 刪除確認對話框
+const deleteDialog = ref({
+  show: false,
+  user: null
+})
+
+// 判斷當前使用者是否為超級管理員
+const isSuperAdmin = computed(() => {
+  return store.currentUser?.role === '超級管理員'
+})
+
 const userColumns = [
   { key: 'username', title: '帳號' },
   { key: 'name', title: '姓名' },
@@ -217,7 +251,7 @@ const addUser = () => {
   console.log('addUser triggered'); // 確認方法是否被觸發
 
   // 檢查必填欄位是否有空缺，並在輸入框下方顯示錯誤訊息
-  // let hasError = false;
+  let hasError = false;
 
   if (!userForm.value.username) {
     userFormErrors.value.username = '帳號為必填項目';
@@ -302,6 +336,29 @@ const getRoleType = (role) => {
     '業者': 'default'
   }
   return roleTypes[role] || 'default'
+}
+
+const showDeleteDialog = (user) => {
+  deleteDialog.value = {
+    show: true,
+    user: user
+  }
+}
+
+const confirmDeleteUser = () => {
+  if (deleteDialog.value.user) {
+    const success = store.removeUser(deleteDialog.value.user.id)
+    if (success) {
+      if (toastRef.value) {
+        toastRef.value.show('使用者已成功刪除', 'success')
+      }
+    }
+    deleteDialog.value = { show: false, user: null }
+  }
+}
+
+const cancelDeleteUser = () => {
+  deleteDialog.value = { show: false, user: null }
 }
 
 onMounted(() => {
