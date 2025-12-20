@@ -1,14 +1,14 @@
 <template>
   <AppLayout>
     <div class="space-y-6">
-        <div class="flex items-center justify-between">
+      <div class="flex items-center justify-between sm:flex-col sm:space-y-4 md:flex-row md:space-y-0">
         <div>
           <h2 class="text-2xl font-bold text-slate-800">使用者管理</h2>
           <p class="text-gray-600 mt-1">管理系統使用者帳號與角色權限</p>
         </div>
         <button 
           @click="showAddUserModal = true"
-          class="btn-primary flex items-center space-x-2"
+          class="btn-primary flex items-center space-x-2 sm:w-full md:w-auto"
         >
           <Icon icon="heroicons:plus" class="w-5 h-5" />
           <span>新增使用者</span>
@@ -21,11 +21,12 @@
           :columns="userColumns"
           :data="store.users"
           :show-actions="true"
+          class="sm:overflow-x-auto sm:whitespace-nowrap md:table-fixed"
         >
           <template #status="{ value }">
             <BaseTag
               :text="value"
-              :type="value === '啟用' ? 'success' : 'default'"
+              :type="value === '啟用' ? 'success' : 'danger'"
             />
           </template>
           
@@ -37,13 +38,19 @@
           </template>
 
           <template #actions="{ row, index }">
-            <div class="flex space-x-2">
+            <div
+              class="flex space-x-2 sm:flex-col sm:space-x-0 sm:space-y-2 md:flex-row md:space-y-0"
+              v-if="row.role !== '超級管理員'"
+            >
               <button
                 @click="toggleUserStatus(row)"
-                :class="row.status === '啟用' ? 'px-3 py-1.5 text-m rounded-lg bg-red-100 text-red-700 hover:bg-red-200' : 'px-3 py-1.5 text-m rounded-lg bg-green-100 text-green-700 hover:bg-green-200'"
-                class="transition-colors"
+                :class="{
+                  'px-3 py-1.5 text-m rounded-lg bg-red-100 text-red-700 hover:bg-red-200': row.status === '停用',
+                  'px-3 py-1.5 text-m rounded-lg bg-green-100 text-green-700 hover:bg-green-200': row.status === '啟用'
+                }"
+                class="transition-colors me-2"
               >
-                {{ row.status === '啟用' ? '停用' : '啟用' }}
+                {{ row.status === '啟用' ? '啟用' : '停用' }}
               </button>
               <button
                 @click="changeUserRole(row)"
@@ -58,73 +65,72 @@
     </div>
 
     <!-- 新增使用者 Modal -->
-    <div v-if="showAddUserModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div class="bg-white rounded-lg w-full max-w-md mx-4">
-        <!-- Modal Header -->
-        <div class="flex items-center justify-between p-6 border-b border-gray-200">
-          <h3 class="text-lg font-semibold text-gray-900">新增使用者</h3>
-          <button 
-            @click="closeAddUserModal"
-            class="text-gray-400 hover:text-gray-600 transition-colors"
+    <BaseModal
+      v-if="showAddUserModal"
+      :show="showAddUserModal"
+      title="新增使用者"
+      @close="closeAddUserModal"
+    >
+      <template #default>
+        <form @submit.prevent="addUser" class="space-y-6">
+          <BaseFormInput
+            v-model="userForm.username"
+            label="帳號"
+            icon="heroicons:user"
+            placeholder="請輸入帳號"
+            help-text="帳號僅供登入使用，建議使用英文或數字"
+            :required="true"
+            :error="userFormErrors.username"
+          />
+          <p v-if="userFormErrors.username" class="text-red-500 text-sm">{{ userFormErrors.username }}</p>
+          
+          <BaseFormInput
+            v-model="userForm.name"
+            label="姓名"
+            icon="heroicons:identification"
+            placeholder="請輸入姓名"
+            help-text="請輸入中文、英文或數字，無法使用特殊符號，字數限20字內"
+            :required="true"
+            :max-length="20"
+            :error="userFormErrors.name"
+          />
+          <p v-if="userFormErrors.name" class="text-red-500 text-sm">{{ userFormErrors.name }}</p>
+          
+          <BaseFormInput
+            v-model="userForm.role"
+            label="角色"
+            type="select"
+            placeholder="請選擇角色"
+            :required="true"
+            :error="userFormErrors.role"
           >
-            <Icon icon="heroicons:x-mark" class="w-6 h-6" />
+            <template #options>
+              <option value="管理員">管理員</option>
+              <option value="承辦人">承辦人</option>
+              <option value="稽核人員">稽核人員</option>
+              <option value="業者">業者</option>
+            </template>
+          </BaseFormInput>
+          <p v-if="userFormErrors.role" class="text-red-500 text-sm">{{ userFormErrors.role }}</p>
+        </form>
+      </template>
+      <template #footer>
+        <div class="flex space-x-4">
+          <button 
+            type="button" 
+            @click="closeAddUserModal"
+            class="btn-secondary flex-1 inline-flex items-center justify-center"
+          >
+            <Icon icon="heroicons:x-mark" class="w-5 h-5 mr-1" />
+            取消
+          </button>
+          <button type="submit" class="btn-primary flex-1 inline-flex items-center justify-center">
+            <Icon icon="heroicons:check" class="w-5 h-5 mr-1" />
+            新增
           </button>
         </div>
-        
-        <!-- Modal Body -->
-        <div class="p-6">
-          <form @submit.prevent="addUser" class="space-y-6">
-            <BaseFormInput
-              v-model="userForm.username"
-              label="帳號"
-              icon="heroicons:user"
-              placeholder="請輸入帳號"
-              help-text="帳號僅供登入使用，建議使用英文或數字"
-              :required="true"
-            />
-            
-            <BaseFormInput
-              v-model="userForm.name"
-              label="姓名"
-              icon="heroicons:identification"
-              placeholder="請輸入姓名"
-              help-text="請輸入使用者的真實姓名"
-              :required="true"
-            />
-            
-            <BaseFormInput
-              v-model="userForm.role"
-              label="角色"
-              type="select"
-              placeholder="請選擇角色"
-              help-text="角色決定了使用者的權限範圍"
-              :required="true"
-            >
-              <template #options>
-                <option value="承辦人">承辦人</option>
-                <option value="稽核人員">稽核人員</option>
-                <option value="業者">業者</option>
-              </template>
-            </BaseFormInput>
-            
-            <div class="flex space-x-3 pt-2">
-              <button 
-                type="button" 
-                @click="closeAddUserModal"
-                class="btn-secondary flex-1 inline-flex items-center justify-center"
-              >
-                <Icon icon="heroicons:x-mark" class="w-5 h-5 mr-1" />
-                取消
-              </button>
-              <button type="submit" class="btn-primary flex-1 inline-flex items-center justify-center">
-                <Icon icon="heroicons:check" class="w-5 h-5 mr-1" />
-                新增
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
+      </template>
+    </BaseModal>
 
     <!-- 變更角色 Modal -->
     <div v-if="editingUser" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -161,6 +167,8 @@
         </form>
       </div>
     </div>
+
+    <BaseToast ref="toastRef" />
   </AppLayout>
 </template>
 
@@ -172,6 +180,8 @@ import BaseCard from '../components/common/BaseCard.vue'
 import BaseTable from '../components/common/BaseTable.vue'
 import BaseTag from '../components/common/BaseTag.vue'
 import BaseFormInput from '../components/common/BaseFormInput.vue'
+import BaseModal from '../components/common/BaseModal.vue';
+import BaseToast from '../components/common/BaseToast.vue';
 import { useAppStore } from '../stores/useAppStore.js'
 import { mockUsers } from '../mock/mockData.js'
 
@@ -184,8 +194,16 @@ const userForm = ref({
   role: ''
 })
 
+const userFormErrors = ref({
+  username: '',
+  name: '',
+  role: ''
+})
+
 const editingUser = ref(null)
 const newRole = ref('')
+
+const toastRef = ref(null);
 
 const userColumns = [
   { key: 'username', title: '帳號' },
@@ -196,16 +214,51 @@ const userColumns = [
 ]
 
 const addUser = () => {
+  console.log('addUser triggered'); // 確認方法是否被觸發
+
+  // 檢查必填欄位是否有空缺，並在輸入框下方顯示錯誤訊息
+  // let hasError = false;
+
+  if (!userForm.value.username) {
+    userFormErrors.value.username = '帳號為必填項目';
+    hasError = true;
+  } else {
+    userFormErrors.value.username = '';
+  }
+
+  if (!userForm.value.name) {
+    userFormErrors.value.name = '姓名為必填項目';
+    hasError = true;
+  } else {
+    userFormErrors.value.name = '';
+  }
+
+  if (!userForm.value.role) {
+    userFormErrors.value.role = '角色為必填項目';
+    hasError = true;
+  } else {
+    userFormErrors.value.role = '';
+  }
+
+  console.log('Validation Errors:', userFormErrors.value); // 確認錯誤訊息是否正確更新
+
+  if (hasError) {
+    console.log('Form has errors, stopping submission'); // 確認是否因為錯誤而停止
+    return;
+  }
+
   const newUser = {
     username: userForm.value.username,
     name: userForm.value.name,
-    role: userForm.value.role
-  }
-  
-  store.addUser(newUser)
-  
-  // 關閉彈窗並重設表單
-  closeAddUserModal()
+    role: userForm.value.role,
+    status: '啟用',
+    createdAt: new Date().toISOString().split('T')[0]
+  };
+
+  console.log('New user data:', newUser); // 確認新增的使用者資料
+
+  store.addUser(newUser);
+  closeAddUserModal();
 }
 
 const closeAddUserModal = () => {
@@ -219,10 +272,18 @@ const closeAddUserModal = () => {
 }
 
 const toggleUserStatus = (user) => {
+  if (user.role === '超級管理員') {
+    alert('無法停用超級管理員')
+    return
+  }
   user.status = user.status === '啟用' ? '停用' : '啟用'
 }
 
 const changeUserRole = (user) => {
+  if (user.role === '超級管理員') {
+    alert('無法變更超級管理員的角色')
+    return
+  }
   editingUser.value = user
   newRole.value = user.role
 }
@@ -234,7 +295,9 @@ const updateUserRole = () => {
 
 const getRoleType = (role) => {
   const roleTypes = {
-    '承辦人': 'info',
+    '超級管理員': 'success',
+    '管理員': 'info',
+    '承辦人': 'orange',
     '稽核人員': 'warning',
     '業者': 'default'
   }
@@ -250,3 +313,6 @@ onMounted(() => {
   }
 })
 </script>
+
+<style scoped>
+</style>

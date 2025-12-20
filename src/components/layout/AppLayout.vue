@@ -223,7 +223,7 @@
                 ]"
                 :title="isMenuCollapsed || isMobile ? '使用者管理' : ''"
               >
-                <span class="material-icons-round flex-shrink-0 transition-all duration-300 ease-in-out transform hover:scale-110 hover:rotate-6 group-hover:text-purple-600 text-lg sm:text-xl" :class="isMenuCollapsed || isMobile ? 'mr-0' : 'sm:mr-3'">👥</span>
+                <span class="material-icons-round flex-shrink-0 transition-all duration-300 ease-in-out transform hover:scale-110 hover:rotate-6 group-hover:text-primary-600 text-lg sm:text-xl" :class="isMenuCollapsed || isMobile ? 'mr-0' : 'sm:mr-3'">👤</span>
                 <span class="transition-all duration-300 ease-in-out whitespace-nowrap overflow-hidden hidden sm:inline" :class="isMenuCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'">使用者管理</span>
                 <!-- 折疊時的懸浮提示 -->
                 <div :class="isMenuCollapsed || isMobile ? 'opacity-0 group-hover:opacity-100' : 'opacity-0'" @click.stop class="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-xs sm:text-sm rounded transition-all duration-300 ease-in-out pointer-events-none whitespace-nowrap z-50">
@@ -330,8 +330,16 @@ const rolePermissions = {
 
 // 獲取當前角色權限
 const currentPermissions = computed(() => {
-  const userRole = store.currentUser?.role || '業者'
-  return rolePermissions[userRole] || rolePermissions['業者']
+  const permissions = {
+    dashboard: true,
+    documentList: store.currentUser?.permissions.includes('ALL') || store.currentUser?.permissions.includes('VIEW_DOCS'),
+    reconciliationImport: store.currentUser?.permissions.includes('ALL') || store.currentUser?.permissions.includes('VIEW_BATCH'),
+    exceptions: store.currentUser?.permissions.includes('ALL') || store.currentUser?.permissions.includes('VIEW_AUDIT'),
+    refund: store.currentUser?.permissions.includes('ALL') || store.currentUser?.permissions.includes('VIEW_DOCS'),
+    batchStatus: store.currentUser?.permissions.includes('ALL') || store.currentUser?.permissions.includes('VIEW_BATCH'),
+    userManagement: store.currentUser?.permissions.includes('ALL')
+  }
+  return permissions
 })
 
 // 獲取用戶姓名首字母

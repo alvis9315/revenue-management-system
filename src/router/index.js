@@ -41,7 +41,7 @@ const routes = [
     path: '/dashboard',
     name: 'Dashboard',
     component: DashboardView,
-    meta: { requiresAuth: true, title: '儀表板' }
+    meta: { requiresAuth: true, title: '儀表板', permissions: ['ALL'] }
   },
   {
     path: '/documents/create',
@@ -52,43 +52,43 @@ const routes = [
     path: '/documents/list',
     name: 'DocumentList',
     component: DocumentListView,
-    meta: { requiresAuth: true, title: '單據管理' }
+    meta: { requiresAuth: true, title: '單據管理', permissions: ['ALL', 'VIEW_DOCS'] }
   },
   {
     path: '/reconciliation/import',
     name: 'ReconciliationImport',
     component: ReconciliationImportView,
-    meta: { requiresAuth: true, title: '核銷匯入' }
+    meta: { requiresAuth: true, title: '核銷匯入', permissions: ['ALL', 'VIEW_BATCH'] }
   },
   {
     path: '/exceptions',
     name: 'ExceptionList',
     component: ExceptionListView,
-    meta: { requiresAuth: true, title: '異常清單' }
+    meta: { requiresAuth: true, title: '異常清單', permissions: ['ALL', 'VIEW_AUDIT'] }
   },
   {
     path: '/refund',
     name: 'Refund',
     component: RefundView,
-    meta: { requiresAuth: true, title: '退費作業' }
+    meta: { requiresAuth: true, title: '退費作業', permissions: ['ALL', 'VIEW_DOCS'] }
   },
   {
     path: '/batch-status',
     name: 'BatchStatus',
     component: BatchStatusView,
-    meta: { requiresAuth: true, title: '批次作業狀態' }
+    meta: { requiresAuth: true, title: '批次作業狀態', permissions: ['ALL', 'VIEW_BATCH'] }
   },
   {
     path: '/users',
     name: 'UserManagement',
     component: UserManagementView,
-    meta: { requiresAuth: true, title: '使用者管理' }
+    meta: { requiresAuth: true, title: '使用者管理', permissions: ['ALL'] }
   },
   {
     path: '/profile/settings',
     name: 'ProfileSettings',
     component: ProfileSettingsView,
-    meta: { requiresAuth: true, title: '個人設定' }
+    meta: { requiresAuth: true, title: '個人設定', permissions: ['ALL', 'VIEW_PROFILE'] }
   }
 ]
 
@@ -100,11 +100,14 @@ const router = createRouter({
 // 路由守衛
 router.beforeEach((to, from, next) => {
   const store = useAppStore()
-  
+
   if (to.meta.requiresAuth && !store.isLoggedIn) {
     next('/login')
   } else if (to.path === '/login' && store.isLoggedIn) {
     next('/dashboard')
+  } else if (to.meta.permissions && !store.currentUser.permissions.includes('ALL') && !to.meta.permissions.some(p => store.currentUser.permissions.includes(p))) {
+    // 檢查權限
+    next('/dashboard') // 無權限時重定向到儀表板
   } else {
     next()
   }

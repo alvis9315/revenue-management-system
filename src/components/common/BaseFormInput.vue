@@ -157,6 +157,10 @@ const props = defineProps({
   rows: {
     type: Number,
     default: 3
+  },
+  maxLength: {
+    type: Number,
+    default: null // 默認無字數限制
   }
 })
 
@@ -185,18 +189,31 @@ const getInputClass = (hasIcon = false) => {
 // 處理輸入事件
 const handleInput = (event) => {
   const value = event.target.value
-  
-  // 如果是 number 類型，轉換為數字
-  if (props.type === 'number' && value !== '') {
-    emit('update:modelValue', Number(value))
+
+  // 如果超過最大字數，觸發錯誤
+  if (props.maxLength && value.length > props.maxLength) {
+    emit('update:modelValue', value.slice(0, props.maxLength))
+    emit('blur', { error: `字數不能超過 ${props.maxLength} 字` })
   } else {
-    emit('update:modelValue', value)
+    // 如果是 number 類型，轉換為數字
+    if (props.type === 'number' && value !== '') {
+      emit('update:modelValue', Number(value))
+    } else {
+      emit('update:modelValue', value)
+    }
   }
 }
 
 // 處理失焦事件
 const handleBlur = (event) => {
-  emit('blur', event)
-}
+  const value = event.target.value;
+
+  // 如果超過最大字數，顯示錯誤訊息
+  if (props.maxLength && value.length > props.maxLength) {
+    emit('blur', { error: `字數不能超過 ${props.maxLength} 字` });
+  } else {
+    emit('blur', event);
+  }
+};
 </script>
 

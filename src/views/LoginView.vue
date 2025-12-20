@@ -103,6 +103,19 @@
                       </div>
                       <span class="text-gray-500 ml-2 flex-shrink-0 text-xs">業者權限</span>
                     </div>
+                    <div class="flex justify-between items-center group">
+                      <div class="flex items-center flex-1 min-w-0">
+                        <span class="font-medium truncate">admin</span>
+                        <button
+                          @click="copyToClipboard('admin')"
+                          class="ml-1 p-1 hover:bg-gray-100 rounded transition-colors flex-shrink-0"
+                          title="複製帳號"
+                        >
+                          <Icon icon="heroicons:clipboard-document" class="w-3 h-3 text-gray-500 hover:text-gray-700" />
+                        </button>
+                      </div>
+                      <span class="text-gray-500 ml-2 flex-shrink-0 text-xs">系統管理員權限</span>
+                    </div>
                   </div>
                   <div class="mt-3 pt-2 border-t border-gray-100 text-center">
                     <span class="text-gray-400">統一密碼: </span>

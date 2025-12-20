@@ -73,10 +73,10 @@ const props = defineProps({
     type: Number,
     default: 60
   },
-  getItemKey: {
-    type: Function,
-    default: null
-  },
+  // getItemKey: {
+  //   type: Function,
+  //   default: null
+  // },
   emptyText: {
     type: String,
     default: '暫無資料'

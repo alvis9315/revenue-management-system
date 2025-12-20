@@ -135,13 +135,13 @@ export const mockUsers = [
     id: 'USER001',
     username: 'admin',
     name: '系統管理員',
-    role: '承辦人',
+    role: '超級管理員',
     status: '啟用',
     createdAt: '2024-01-01'
   },
   {
     id: 'USER002',
-    username: 'auditor1',
+    username: 'auditor',
     name: '王稽核',
     role: '稽核人員',
     status: '啟用',
@@ -149,7 +149,7 @@ export const mockUsers = [
   },
   {
     id: 'USER003',
-    username: 'vendor1',
+    username: 'vendor',
     name: '李業者',
     role: '業者',
     status: '啟用',
@@ -157,11 +157,19 @@ export const mockUsers = [
   },
   {
     id: 'USER004',
-    username: 'clerk1',
+    username: 'operator',
     name: '張承辦',
     role: '承辦人',
     status: '停用',
     createdAt: '2024-03-01'
+  },
+  {
+    id: 'USER005',
+    username: 'admin2',
+    name: '副系統管理員',
+    role: '管理員',
+    status: '啟用',
+    createdAt: '2024-04-01'
   }
 ]
 

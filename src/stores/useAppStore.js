@@ -32,13 +32,14 @@ export const useAppStore = defineStore('app', () => {
   })
   
   // Actions
-  const login = (username, password) => {
+    const login = (username, password) => {
     // 帳號對應的角色
-    const accountRoles = {
-      'operator': '承辦人',
-      'auditor': '稽核人員', 
-      'vendor': '業者'
-    }
+      const accountRoles = {
+        'operator': '承辦人',
+        'auditor': '稽核人員', 
+        'vendor': '業者',
+        'admin': '系統管理員'
+      }
     
     // 驗證帳號密碼
     if (password === '123' && accountRoles[username]) {
@@ -53,6 +54,17 @@ export const useAppStore = defineStore('app', () => {
         password: password
       }
       userRole.value = role
+
+      // 系統管理員可存取所有功能
+      if (role === '系統管理員') {
+        currentUser.value.permissions = ['ALL']
+      } else if (role === '承辦人') {
+        currentUser.value.permissions = ['VIEW_DOCS', 'EDIT_DOCS', 'VIEW_BATCH', 'VIEW_PROFILE']
+      } else if (role === '稽核人員') {
+        currentUser.value.permissions = ['VIEW_DOCS', 'VIEW_AUDIT', 'VIEW_PROFILE']
+      } else if (role === '業者') {
+        currentUser.value.permissions = ['VIEW_DOCS', 'VIEW_PROFILE']
+      }
       return true
     }
     return false
